@@ -11,8 +11,6 @@ const channel = client.channels.get(voteChannel);
 const postVote = async (req, res) => {
   try {
     const { userID, streak, points } = req.body;
-    console.log(req.body);
-    console.log(userID, streak, points);
     const user = await client.fetchUser(userID);
     const userName = user.tag;
 
