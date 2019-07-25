@@ -44,6 +44,6 @@ app.use(basicAuth({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/stats', statsController);
+app.use('/vote', statsController);
 
 module.exports = app;

@@ -11,6 +11,8 @@ const channel = client.channels.get(voteChannel);
 const postVote = async (req, res) => {
   try {
     const { userID, streak, points } = req.body;
+    console.log(req.body);
+    console.log(userID, streak, points);
     const user = await client.fetchUser(userID);
     const userName = user.tag;
 
@@ -18,11 +20,11 @@ const postVote = async (req, res) => {
       split: true,
       code: "js",
     });
-    res.send(200);
+    res.sendStatus(200);
   }
   catch(error) {
     console.error(error);
-    res.send(500);
+    res.sendStatus(500);
   }
 };
 
