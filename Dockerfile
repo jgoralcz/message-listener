@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # install pm2 and our packages.
-RUN npm install pm2 -g && --save && npm install
+RUN npm install pm2 -g && npm install
 
 # Bundle app source
 COPY . .
