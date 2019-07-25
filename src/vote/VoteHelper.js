@@ -1,6 +1,5 @@
-const { client } = require('../index');
+const client = require('../index');
 const { voteChannel } = require('../../config.json');
-
 const channel = client.channels.get(voteChannel);
 
 /**
@@ -15,7 +14,10 @@ const postVote = async (req, res) => {
     const user = await client.fetchUser(userID);
     const userName = user.tag;
 
-    await channel.send(`${userName}(${userID}) has received ${points} points, reset their rolls, and is on a ${streak} day voting streak.`);
+    await channel.send(`${userName}(${userID}) has received ${points} points, reset their rolls, and is on a ${streak} day voting streak.`, {
+      split: true,
+      code: "js",
+    });
     res.send(200);
   }
   catch(error) {

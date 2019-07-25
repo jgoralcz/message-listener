@@ -1,14 +1,13 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { token } = require('../config.json');
-require('./server.js');
 
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-
+  console.log(`Logged in as ${client.user.tag}.`);
+  require('./server.js');
 });
 
 client.login(token).catch(console.error);
 
-module.export = client;
+module.exports = client;
