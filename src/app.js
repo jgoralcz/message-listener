@@ -4,11 +4,7 @@ const basicAuth = require('express-basic-auth');
 const statsController = require('./vote/VoteController');
 const { username, password } = require('../config.json');
 
-/**
- * app configuration for express.
- * We need to use json and make sure we have the right credentials.
- * @type {Function|*}
- */
+
 const app = express();
 
 /**
@@ -25,11 +21,6 @@ const myAsyncAuthorizer = (user, pass, cb) => {
   return cb(null, false);
 };
 
-/**
- * no credentials.
- * @param req the user's request.
- * @returns {string}
- */
 const getUnauthorizedResponse = req => (req.auth
   ? (`{ "error": "Credentials ${req.auth.user}:${req.auth.password} rejected" }`)
   : '{ "error": "No credentials provided" }');
@@ -39,7 +30,6 @@ app.use(basicAuth({
   authorizeAsync: true,
   unauthorizedResponse: getUnauthorizedResponse,
 }));
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
