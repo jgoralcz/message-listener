@@ -13,8 +13,6 @@ client.on('ready', async () => {
   // require('./server.js');
 });
 
-//TODO: require guildmember update
-
 client.login(token).catch(console.error);
 
 module.exports = client;
