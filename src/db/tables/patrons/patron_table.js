@@ -7,9 +7,9 @@ const getPatronRoleID = async (patronName) => poolQuery(`
 `, [patronName]);
 
 const getPatronRolesUserID = async (userID) => poolQuery(`
-  SELECT patron_name, patron_id, guild_id
+  SELECT patron_name, pt.patron_id, guild_id
   FROM (
-    SELECT patron_id
+    SELECT patron_id, guild_id
     FROM patron_table
     WHERE user_id = $1
   ) pt
@@ -47,7 +47,7 @@ const updateGuildPatronTwo = async (guildID, isPatron) => poolQuery(`
 
 const resetGuildPatron = async (guildID) => poolQuery(`
   UPDATE "guildsTable"
-  SET patron_two = false, rarity = 60, roll_claim_minute = 0, unlimited_claims = false
+  SET patron_two = false, patron_one = false, rarity = 60, roll_claim_minute = 0, unlimited_claims = false
   WHERE "guildId" = $1;
 `, [guildID]);
 

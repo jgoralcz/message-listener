@@ -11,7 +11,7 @@ const {
 } = require('../db/tables/patrons/patron_table');
 
 const thanks = (role) => `Thank you for becoming a ${role} Patron! <:yayyy:594449175534632967>. To properly set you up, I will need you to use the \`@Bongo#3445 id\` command **IN YOUR SERVER** and **paste** the results here.`;
-const setupMessage = 'I have set you up! You can now use the `serversettings` command to customize your perks. If I made a mistake please be sure to send a message in the official Bongo Support server.\n**Please do not leave the server otherwise you may lose your perks automatically!**';
+const setupMessage = 'I have set your server up! You can now use the `serversettings` command to customize your perks. If I made a mistake please be sure to send a message in the official Bongo Support server https://discord.gg/dfajqcZ.\n**Please do not leave the server otherwise you may lose your perks automatically!**';
 
 const awaitUserMessage = async (newMember, updateGuildUserPatronFunction, updateGuildUserPatron, patronID) => {
   const channel = await newMember.createDM();
@@ -24,11 +24,11 @@ const awaitUserMessage = async (newMember, updateGuildUserPatronFunction, update
     const { content } = message;
     if (!content) return;
 
-    const split = content.split(' ');
+    const split = content.split(/\s+/);
     const verify = split.filter((ele) => ele.match(matchID));
 
     if (verify.length <= 0) return;
-    const guildID = verify[verify.length - 1];
+    const guildID = verify[0];
 
     try {
       await updateGuildUserPatronFunction(newMember.id, patronID, guildID);
@@ -44,7 +44,8 @@ const awaitUserMessage = async (newMember, updateGuildUserPatronFunction, update
 const run = (client) => {
   // check for role updates.
   client.on('guildMemberUpdate', async (oldMember, newMember) => {
-    if (oldMember._roles && newMember._roles.length && oldMember._roles.length === newMember._roles.length) return undefined;
+    if (oldMember._roles && newMember._roles.length
+      && oldMember._roles.length === newMember._roles.length) return undefined;
 
     if (!oldMember._roles.includes(superBongo) && newMember._roles.includes(superBongo)) {
       const patronIDQuery = await getPatronRoleID('Super Bongo');
@@ -55,7 +56,7 @@ const run = (client) => {
       await newMember.send('Thank you for becoming a Super Bongo Patron! <:yayyy:594449175534632967> I have automatically set you up. If I made a mistake please send a message in the offical server.\n**Please do not leave the server otherwise you may lose your perks automatically!**').catch(console.error);
       console.log('Super Bongo', newMember.id, patronID, true);
 
-      await insertPatron(newMember.id, null, patronID);
+      await insertPatron(newMember.id, patronID, null);
       await updatePatronUser(newMember.id, true);
       return undefined;
     }
@@ -73,8 +74,6 @@ const run = (client) => {
     }
 
     if (!oldMember._roles.includes(smolNeko) && newMember._roles.includes(smolNeko)) {
-      await newMember.send(thanks('Smol Neko')).catch(console.error);
-
       const patronIDQuery = await getPatronRoleID('Smol Neko');
       const patronID = patronIDQuery[0].patron_id;
 
@@ -103,6 +102,7 @@ const run = (client) => {
     if (oldMember._roles.includes(smolNeko) && !newMember._roles.includes(smolNeko)) {
       return resetGuildLeaver(newMember, 'Smol Neko');
     }
+    return undefined;
   });
 };
 
