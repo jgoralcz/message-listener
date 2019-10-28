@@ -1,4 +1,4 @@
-# docker container run -d -m 150m --restart always -v /etc/localtime:/etc/localtime -p 8998:8998 --name message-listener
+# docker container run -d -m "1024m" --restart always -v /etc/localtime:/etc/localtime -p 8998:8998 --name message-listener
 FROM node:12
 
 WORKDIR /usr/src/app

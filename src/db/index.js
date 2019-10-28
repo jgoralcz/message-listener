@@ -26,10 +26,10 @@ const pool = new Pool({
 const poolQuery = async (query, paramsArray) => {
   const client = await pool.connect();
   try {
-    const query = await client.query(query, paramsArray);
+    const q = await client.query(query, paramsArray);
  
-    if (!query || !query.rows || !query.rows.length <= 0) return undefined;
-    return query.rows;
+    if (!q || !q.rows || q.rows.length <= 0) return undefined;
+    return q.rows;
 
   } finally {
     client.release();
