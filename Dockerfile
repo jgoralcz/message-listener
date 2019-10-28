@@ -1,16 +1,22 @@
-# docker container run -d -m "1024m" --restart always -v /etc/localtime:/etc/localtime -p 8998:8998 --name message-listener
-FROM node:12
+# docker stop message-listener && docker rm message-listener && docker run -d -p 8998:8998 --restart always --memory="1024m" --cpu-shares=1024 --name message-listener message-listener
+FROM node:latest
 
-WORKDIR /usr/src/app
+LABEL owner = jgoralcz
+LABEL serviceVersion = 0.1.0
+LABEL description = "Message Listener and Helper Bot"
 
-COPY package*.json ./
+ENV NODE_ENV=PROD
 
-# install our packages.
-RUN npm install
+COPY --chown=node:node config.json /usr/src/node/
+COPY --chown=node:node package*.json /usr/src/node/
+COPY --chown=node:node src/ /usr/src/node/src/
 
-# Bundle app source
-COPY . .
+WORKDIR /usr/src/node
 
 EXPOSE 8998
 
-CMD ["node", "src/index.js"]
+USER node
+
+RUN npm install
+
+CMD ["npm", "start"]
