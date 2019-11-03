@@ -1,6 +1,5 @@
 const client = require('../index');
 const { voteChannel } = require('../../config.json');
-const channel = client.channels.get(voteChannel);
 
 /**
  * post vote to discord channel
@@ -10,6 +9,7 @@ const channel = client.channels.get(voteChannel);
  */
 const postVote = async (req, res) => {
   try {
+    const channel = client.channels.get(voteChannel);
     const { userID, streak, points } = req.body;
     const user = await client.fetchUser(userID);
     const userName = user.tag;

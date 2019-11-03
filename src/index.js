@@ -11,7 +11,7 @@ client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}.`);
 
   await events(client);
-  // require('./server.js');
+  require('./server.js');
 });
 
 client.login(token).catch(console.error);
