@@ -1,20 +1,31 @@
-const app = require('./app');
+const express = require('express');
+const bodyParser = require('body-parser');
+const log4js = require('log4js');
+
+const logger = log4js.getLogger();
+const { basicAuth, authorizer, unauthResponse } = require('./middleware/basicAuth');
 const { port } = require('../config.json');
 
+const app = express();
+
+app.use(basicAuth({
+  authorizer,
+  authorizeAsync: true,
+  unauthorizedResponse: unauthResponse,
+}));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 app.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
+  logger.log(`Express server listening on port ${port}`);
 });
 
-// shows where the rejection occured
 process.on('unhandledRejection', (reason, p) => {
-  console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  logger.error(JSON.stringify(`Unhandled Rejection at: Promise ${p} reason: ${reason}`));
 });
 
-// shows where the rejection occured
 process.on('uncaughtException', (err) => {
-  console.error(`${(new Date()).toUTCString()} uncaughtException:`, err.message);
-  console.error(err.stack);
-
-  // exit the program because it's in an undefined state.
-  // process.exit(1);
+  logger.error(`${(new Date()).toUTCString()} uncaughtException: ${err.message}`);
+  logger.error(err.stack);
 });
