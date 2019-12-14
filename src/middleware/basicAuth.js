@@ -9,8 +9,9 @@ const authorizer = (user, pass, cb) => {
 };
 
 const unauthResponse = (req) => (req.auth
-  ? (`{ "error": "Credentials ${req.auth.user}:${req.auth.password} rejected" }`)
-  : '{ "error": "No credentials provided" }');
+  ? JSON.stringify({ error: `Credentials ${req.auth.user}:${req.auth.password} rejected` })
+  : JSON.stringify({ error: 'No credentials provided' })
+);
 
 module.exports = {
   basicAuth,
