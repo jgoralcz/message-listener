@@ -6,7 +6,7 @@ const images = require('./characters/images');
 // const series = require('./series');
 
 router.use('/votes', votes);
-router.use('/characters/images', images);
+router.use('/images', images);
 // router.use('/characters', characters);
 // router.use('/series', series);
 

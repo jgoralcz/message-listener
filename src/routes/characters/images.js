@@ -1,4 +1,5 @@
 const { RichEmbed } = require('discord.js');
+const route = require('express-promise-router')();
 const log4js = require('log4js');
 
 const logger = log4js.getLogger();
@@ -7,11 +8,11 @@ const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { imageChannel } = require('../../../config.json');
 
-const postImage = async (req, res) => {
+route.post('/', async (req, res) => {
   try {
     const channel = client.channels.get(imageChannel);
     const {
-      title, thumbnail, imageURL, body, id,
+      title, thumbnail, imageURL, body, id, series,
     } = req.body;
 
     const embed = new RichEmbed()
@@ -19,7 +20,7 @@ const postImage = async (req, res) => {
       .setThumbnail(thumbnail)
       .setImage(imageURL)
       .setURL(imageURL)
-      .setDescription(body)
+      .setDescription(`${series}\n${body}`)
       .setTimestamp();
 
     if (!channel) return;
@@ -46,25 +47,25 @@ const postImage = async (req, res) => {
       if (user == null) return;
 
       switch (r.emoji.id) {
-        // ok
         case '473906375064420362':
           collector.stop();
           break;
 
-        // delete
         case '473906403019456522':
           try {
-            await bongoBotAPI.delete();
+            await bongoBotAPI.delete(`/images/${id}`);
+            await reactMessage.delete();
+            logger.info(`Deleted ${title}, ${series}, ${imageURL}`);
           } catch (error) {
             logger.error(error);
           }
           collector.stop();
           break;
 
-        // nsfw
         case '473914756827316236':
           try {
-            await bongoBotAPI.patch();
+            await bongoBotAPI.patch(`/images/${id}/nsfw`, { nsfw: true });
+            await reactMessage.edit('**Marked as NSFW**', embed);
           } catch (error) {
             logger.error(error);
           }
@@ -78,7 +79,7 @@ const postImage = async (req, res) => {
 
     collector.on('collect', collectorFunction);
     collector.on('end', async () => {
-      if (reactMessage.deleted) return;
+      if (!reactMessage || reactMessage.deleted) return;
 
       await reactMessage.clearReactions();
     });
@@ -88,9 +89,7 @@ const postImage = async (req, res) => {
     logger.error(error);
     res.sendStatus(500);
   }
-};
+});
 
 
-module.exports = {
-  postImage,
-};
+module.exports = route;

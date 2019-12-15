@@ -1,25 +1,40 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const bodyparser = require('body-parser');
 const log4js = require('log4js');
 
-const logger = log4js.getLogger();
+const router = require('./routes/routes');
+
 const { basicAuth, authorizer, unauthResponse } = require('./middleware/basicAuth');
+const { errorHandler } = require('./middleware/errorHandler');
+const { httpLogger } = require('./middleware/logger');
+
+const logger = log4js.getLogger();
+const { LOCAL, PROD, TEST } = require('./util/constants/environments');
 const { port } = require('../config.json');
 
-const app = express();
+const env = process.env.NODE_ENV || LOCAL;
 
-app.use(basicAuth({
+logger.level = 'info';
+const server = express();
+
+server.use(basicAuth({
   authorizer,
   authorizeAsync: true,
   unauthorizedResponse: unauthResponse,
 }));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+server.use(bodyparser.urlencoded({ extended: true }));
+server.use(bodyparser.json());
+server.use(httpLogger());
 
-app.listen(port, () => {
-  logger.log(`Express server listening on port ${port}`);
-});
+server.use('/', router, errorHandler);
+
+// if (env.toUpperCase() === PROD || env.toUpperCase() === TEST) {
+// const certificate = { key: fs.readFileSync(serverKey), cert: fs.readFileSync(serverCert) };
+// https.createServer(certificate, server).listen(port, () => logger.info(`${env.toUpperCase()} https server started on ${port}.`))
+// } else {
+server.listen(port, () => logger.info(`${env.toUpperCase()} server started on ${port}.`));
+// }
 
 process.on('unhandledRejection', (reason, p) => {
   logger.error(JSON.stringify(`Unhandled Rejection at: Promise ${p} reason: ${reason}`));

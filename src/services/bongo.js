@@ -3,10 +3,8 @@ const { bongoBotAPI: { host, port }, username, password } = require('../../confi
 
 const bongoBotAPI = axios.create({
   baseURL: `http://${host}:${port}`,
-  auth: {
-    user: username,
-    pass: password,
-  },
+  auth: { username, password },
+  headers: { 'Content-type': 'application/json' },
 });
 
 module.exports = {
