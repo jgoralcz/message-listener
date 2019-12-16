@@ -15,10 +15,6 @@ client.on('ready', async () => {
 
   await client.user.setStatus('invisible');
   await events(client);
-<<<<<<< HEAD
-=======
-  require('./server.js');
->>>>>>> 2645dcc3037d509d2155d7907d5488cbeb20a5d6
 });
 
 client.login(token).catch((error) => logger.error(error));
