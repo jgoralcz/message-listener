@@ -3,6 +3,7 @@ const superBongo = '546465605398560770';
 const bongoNeko = '591155600650666005';
 const smolNeko = '546430177706770455';
 const bongoDaddy = '593188921421332480';
+const reviewer = '650425268845936652';
 
 module.exports = {
   matchID,
@@ -10,4 +11,5 @@ module.exports = {
   bongoNeko,
   smolNeko,
   bongoDaddy,
+  reviewer,
 };

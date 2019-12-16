@@ -7,6 +7,7 @@ const logger = log4js.getLogger();
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { imageChannel } = require('../../../config.json');
+const { reviewer } = require('../../lib/constants');
 
 route.post('/', async (req, res) => {
   try {
@@ -45,6 +46,9 @@ route.post('/', async (req, res) => {
       await r.fetchUsers();
       const user = r.users.filter((u) => !u.bot).last();
       if (user == null) return;
+
+      const member = await reactMessage.guild.fetchMember(user).catch(() => null);
+      if (!member.roles.get(reviewer)) return;
 
       switch (r.emoji.id) {
         case '473906375064420362':
