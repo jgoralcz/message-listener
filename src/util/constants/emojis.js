@@ -1,0 +1,5 @@
+module.exports = Object.freeze({
+  APPROVE: '473906375064420362',
+  DENY: '473906403019456522',
+  NSFW: '473914756827316236',
+});

@@ -1,6 +1,6 @@
 const {
   superBongo, bongoNeko, smolNeko,
-} = require('../lib/constants');
+} = require('../util/constants/roles');
 
 const { resetGuildLeaver, resetSuperBongo } = require('../lib/resetUsers');
 
