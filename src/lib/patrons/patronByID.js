@@ -1,6 +1,4 @@
-const { owner } = require('../../../config');
 const { bongoBotAPI } = require('../../services/bongo');
-const client = require('../../index');
 
 const getPatronIDByName = async (roleName) => {
   if (!roleName) throw Error('Patron ID not found.');

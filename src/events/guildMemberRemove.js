@@ -7,15 +7,15 @@ const { resetGuildLeaver, resetSuperBongo } = require('../lib');
 const run = (client) => {
   client.on('guildMemberRemove', async (leftMember) => {
     if (leftMember.roles.get(superBongo)) {
-      return resetSuperBongo(leftMember, 'Super Bongo');
+      return resetSuperBongo(client, leftMember, 'Super Bongo');
     }
 
     if (leftMember.roles.get(bongoNeko)) {
-      return resetGuildLeaver(leftMember, 'Bongo Neko');
+      return resetGuildLeaver(client, leftMember, 'Bongo Neko');
     }
 
     if (leftMember.roles.get(smolNeko)) {
-      return resetGuildLeaver(leftMember, 'Smol Neko');
+      return resetGuildLeaver(client, leftMember, 'Smol Neko');
     }
 
     return undefined;

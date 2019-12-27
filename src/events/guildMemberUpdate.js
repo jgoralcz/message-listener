@@ -17,15 +17,15 @@ const run = (client) => {
 
     // new members
     if (!oldMember.roles.get(superBongo) && newMember.roles.get(superBongo)) {
-      return updateSuperBongo(newMember, 'Super Bongo').catch((error) => logger.error(error));
+      return updateSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }
 
     if (!oldMember.roles.get(bongoNeko) && newMember.roles.get(bongoNeko)) {
-      return updateGuildPatron(newMember, 'Bongo Neko').catch((error) => logger.error(error));
+      return updateGuildPatron(client, newMember, 'Bongo Neko').catch((error) => logger.error(error));
     }
 
     if (!oldMember.roles.get(smolNeko) && newMember.roles.get(smolNeko)) {
-      return updateGuildPatron(newMember, 'Smol Neko').catch((error) => logger.error(error));
+      return updateGuildPatron(client, newMember, 'Smol Neko').catch((error) => logger.error(error));
     }
 
     // special
@@ -37,15 +37,15 @@ const run = (client) => {
 
     // removed role
     if (oldMember.roles.get(superBongo) && !newMember.roles.get(superBongo)) {
-      return resetSuperBongo(newMember, 'Super Bongo').catch((error) => logger.error(error));
+      return resetSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }
 
     if (oldMember.roles.get(bongoNeko) && !newMember.roles.get(bongoNeko)) {
-      return resetGuildLeaver(newMember, 'Bongo Neko').catch((error) => logger.error(error));
+      return resetGuildLeaver(client, newMember, 'Bongo Neko').catch((error) => logger.error(error));
     }
 
     if (oldMember.roles.get(smolNeko) && !newMember.roles.get(smolNeko)) {
-      return resetGuildLeaver(newMember, 'Smol Neko').catch((error) => logger.error(error));
+      return resetGuildLeaver(client, newMember, 'Smol Neko').catch((error) => logger.error(error));
     }
     return undefined;
   });

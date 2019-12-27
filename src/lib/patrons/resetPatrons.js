@@ -4,13 +4,12 @@ const logger = log4js.getLogger();
 
 const { owner } = require('../../../config');
 const { bongoBotAPI } = require('../../services/bongo');
-const client = require('../../index');
 
 const { getPatronIDByName } = require('./patronByID');
 
 const thanksGoodbye = (role) => `Thanks for being a ${role} patron! Every bit of support helps keep me alive and allows me to create new things for everyone! Unfortunately, you no longer have your perks.\n\n This process is automatic. If you believe there is a mistake please ask in the official support server https://discord.gg/dfajqcZ.`;
 
-const resetSuperBongo = async (leftMember, patronType) => {
+const resetSuperBongo = async (client, leftMember, patronType) => {
   try {
     const patronID = await getPatronIDByName(patronType);
 
@@ -27,7 +26,7 @@ const resetSuperBongo = async (leftMember, patronType) => {
   leftMember.send(thanksGoodbye(patronType)).catch((error) => logger.error(error));
 };
 
-const resetGuildLeaver = async (leftMember, patronType) => {
+const resetGuildLeaver = async (client, leftMember, patronType) => {
   try {
     const patronID = await getPatronIDByName(patronType);
     await bongoBotAPI.patch(`/patrons/users/${leftMember.id}/guilds/reset`, { patronID });
