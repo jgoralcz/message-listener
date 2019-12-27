@@ -53,7 +53,19 @@ route.post('/', async (req, res) => {
       switch (r.emoji.id) {
         case APPROVE:
           try {
-            await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: false, uploader, id }).catch((error) => logger.error(error));
+            const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: false, uploader, id }).catch((error) => logger.error(error));
+            const uploadUser = await client.fetchUser(uploader);
+
+            uploadUser.send(`\`✅\` | Your SFW (safe for work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+            if (nsfw) {
+              const nsfwEmbed = new RichEmbed()
+                .setTitle(name)
+                .setImage(imageURL)
+                .setURL(imageURL)
+                .setDescription(`${series} - SFW\n${body}`)
+                .setTimestamp();
+              await reactMessage.edit(nsfwEmbed);
+            }
           } catch (error) {
             logger.error(error);
           }
@@ -63,6 +75,8 @@ route.post('/', async (req, res) => {
         case DENY:
           try {
             // await bongoBotAPI.delete(`/images/${id}`);
+            const uploadUser = await client.fetchUser(uploader);
+            uploadUser.send(`\`❌\` | ${imageURL} for **${name}** from **${series}** has been denied. Try to upload high quality and relevant images. Thank you!`);
             await reactMessage.delete();
             logger.info(`Deleted ${name}, ${series}, ${imageURL}`);
           } catch (error) {
@@ -73,15 +87,19 @@ route.post('/', async (req, res) => {
 
         case NSFW:
           try {
-            await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: true, uploader, id }).catch((error) => logger.error(error));
-            // await bongoBotAPI.patch(`/images/${id}/nsfw`, { nsfw: true });
-            const nsfwEmbed = new RichEmbed()
-              .setTitle(name)
-              .setImage(imageURL)
-              .setURL(imageURL)
-              .setDescription(`${series} - NSFW\n${body}`)
-              .setTimestamp();
-            await reactMessage.edit(nsfwEmbed);
+            const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: true, uploader, id }).catch((error) => logger.error(error));
+            const uploadUser = await client.fetchUser(uploader);
+
+            uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+            if (!nsfw) {
+              const nsfwEmbed = new RichEmbed()
+                .setTitle(name)
+                .setImage(imageURL)
+                .setURL(imageURL)
+                .setDescription(`${series} - NSFW\n${body}`)
+                .setTimestamp();
+              await reactMessage.edit(nsfwEmbed);
+            }
           } catch (error) {
             logger.error(error);
           }

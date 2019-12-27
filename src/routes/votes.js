@@ -1,5 +1,4 @@
 const route = require('express-promise-router')();
-const log4js = require('log4js');
 
 const client = require('../index');
 const { voteChannel } = require('../../config.json');
