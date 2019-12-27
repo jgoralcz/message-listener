@@ -4,32 +4,32 @@ const log4js = require('log4js');
 
 const logger = log4js.getLogger();
 
-const client = require('../../index');
-const { bongoBotAPI } = require('../../services/bongo');
-const { characterChannel, voteChannel } = require('../../../config.json');
-const { reviewer } = require('../../util/constants/roles');
+const client = require('../index');
+const { bongoBotAPI } = require('../services/bongo');
+const { seriesChannel, voteChannel } = require('../../config.json');
+const { reviewer } = require('../util/constants/roles');
 
-const { APPROVE, DENY } = require('../../util/constants/emojis');
+const { APPROVE, DENY } = require('../util/constants/emojis');
 
 route.post('/', async (req, res) => {
   try {
-    const channel = client.channels.get(characterChannel);
+    const channel = client.channels.get(seriesChannel);
     const channelVote = client.channels.get(voteChannel);
 
     const {
-      name, series, body, imageURL, uploader, description, husbando, unknownGender, nsfw,
+      name, body, imageURL, uploader, description, nsfw, is_western: western, is_game: game,
     } = req.body;
 
-    if (!name || !series || !imageURL || !uploader || !description || husbando == null || unknownGender == null || nsfw == null) {
-      channelVote.send(`Could not upload character: ${name}, ${series} from ${uploader}.`).catch((error) => logger.error(error));
-      return res.sendStatus(400).send({ error: `Invalid character: ${JSON.stringify(req.body)}` });
+    if (!name || !imageURL || !uploader || !description || western == null || nsfw == null) {
+      channelVote.send(`Could not upload series: ${name} from ${uploader}.`).catch((error) => logger.error(error));
+      return res.sendStatus(400).send({ error: `Invalid series: ${JSON.stringify(req.body)}` });
     }
 
     const embed = new RichEmbed()
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .setDescription(`${series} - ${((nsfw) ? 'nsfw' : 'sfw').toUpperCase()}\n${body}`)
+      .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
       .setTimestamp();
 
     if (!channel) return res.status(500).send('Channel not found.');
@@ -59,10 +59,10 @@ route.post('/', async (req, res) => {
       switch (r.emoji.id) {
         case APPROVE:
           try {
-            await bongoBotAPI.post('/characters', req.body).catch((error) => logger.error(error));
+            await bongoBotAPI.post('/series', req.body);
             const uploadUser = await client.fetchUser(uploader);
 
-            uploadUser.send(`\`✅\` | Thanks for uploading **${name}** from **${series}**!`);
+            uploadUser.send(`\`✅\` | Thanks for uploading the series **${name}**!`);
           } catch (error) {
             logger.error(error);
           }
@@ -72,10 +72,10 @@ route.post('/', async (req, res) => {
         case DENY:
           try {
             await reactMessage.delete();
-            logger.info(`Deleted ${name}, ${series}, ${imageURL}`);
+            logger.info(`Deleted ${name}, ${imageURL}`);
 
             const uploadUser = await client.fetchUser(uploader);
-            uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series}** has been denied. You can still make a custom waifu out of them using the \`customwaifu\` command.`);
+            uploadUser.send(`\`❌\` | Sorry, your submitted series **${name}** has been denied. You can still make a custom waifu and add it to its own series using the \`customwaifu\` command.`);
           } catch (error) {
             logger.error(error);
           }

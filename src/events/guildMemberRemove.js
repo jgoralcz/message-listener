@@ -2,19 +2,19 @@ const {
   superBongo, bongoNeko, smolNeko,
 } = require('../util/constants/roles');
 
-const { resetGuildLeaver, resetSuperBongo } = require('../lib/resetUsers');
+const { resetGuildLeaver, resetSuperBongo } = require('../lib');
 
 const run = (client) => {
   client.on('guildMemberRemove', async (leftMember) => {
-    if (leftMember._roles.includes(superBongo)) {
-      return resetSuperBongo(leftMember);
+    if (leftMember.roles.get(superBongo)) {
+      return resetSuperBongo(leftMember, 'Super Bongo');
     }
 
-    if (leftMember._roles.includes(bongoNeko)) {
+    if (leftMember.roles.get(bongoNeko)) {
       return resetGuildLeaver(leftMember, 'Bongo Neko');
     }
 
-    if (leftMember._roles.includes(smolNeko)) {
+    if (leftMember.roles.get(smolNeko)) {
       return resetGuildLeaver(leftMember, 'Smol Neko');
     }
 

@@ -21,7 +21,7 @@ route.post('/', async (req, res) => {
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .setDescription(`${series} - ${(nsfw || 'sfw').toString().toUpperCase()}\n${body}`)
+      .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
       .setTimestamp();
 
     if (!channel) return;
