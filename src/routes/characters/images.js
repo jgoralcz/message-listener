@@ -26,7 +26,7 @@ route.post('/', async (req, res) => {
 
     if (!channel) return;
 
-    const reactMessage = await channel.send(embed);
+    const reactMessage = await channel.send('<:success:473906375064420362> = SFW <:failure:473906403019456522> = DELETE <:blacklist:473914756827316236> = NSFW', embed);
 
     const filter = (reaction, user) => (
       reaction.emoji.id === APPROVE
@@ -37,8 +37,8 @@ route.post('/', async (req, res) => {
     const collector = reactMessage.createReactionCollector(filter, { time: 60000000 });
 
     await reactMessage.react(APPROVE);
-    await reactMessage.react(DENY);
     await reactMessage.react(NSFW);
+    await reactMessage.react(DENY);
 
     const collectorFunction = async (r) => {
       if (r == null || !r.emoji || !r.fetchUsers) return;
@@ -57,15 +57,13 @@ route.post('/', async (req, res) => {
             const uploadUser = await client.fetchUser(uploader);
 
             uploadUser.send(`\`✅\` | Your SFW (safe for work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
-            if (nsfw) {
-              const nsfwEmbed = new RichEmbed()
-                .setTitle(name)
-                .setImage(imageURL)
-                .setURL(imageURL)
-                .setDescription(`${series} - SFW\n${body}`)
-                .setTimestamp();
-              await reactMessage.edit(nsfwEmbed);
-            }
+            const nsfwEmbed = new RichEmbed()
+              .setTitle(name)
+              .setImage(data.url)
+              .setURL(data.url)
+              .setDescription(`${series} - SFW\n${body}`)
+              .setTimestamp();
+            await reactMessage.edit('', { embed: nsfwEmbed });
           } catch (error) {
             logger.error(error);
           }
@@ -91,15 +89,13 @@ route.post('/', async (req, res) => {
             const uploadUser = await client.fetchUser(uploader);
 
             uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
-            if (!nsfw) {
-              const nsfwEmbed = new RichEmbed()
-                .setTitle(name)
-                .setImage(imageURL)
-                .setURL(imageURL)
-                .setDescription(`${series} - NSFW\n${body}`)
-                .setTimestamp();
-              await reactMessage.edit(nsfwEmbed);
-            }
+            const nsfwEmbed = new RichEmbed()
+              .setTitle(name)
+              .setImage(data.url)
+              .setURL(data.url)
+              .setDescription(`${series} - NSFW\n${body}`)
+              .setTimestamp();
+            await reactMessage.edit('', { embed: nsfwEmbed });
           } catch (error) {
             logger.error(error);
           }
