@@ -67,7 +67,7 @@ route.post('/', async (req, res) => {
               .setImage(data.url)
               .setURL(data.url)
               .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
-              .setFooter(member.id, member.displayAvatarURL)
+              .setFooter(`${member.tag} (${member.id})`, member.displayAvatarURL)
               .setTimestamp();
             await reactMessage.edit('', { embed: characterEmbed });
             uploadUser.send(`\`✅\` | Thanks for uploading **${name}** from **${series}**!`);
