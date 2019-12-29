@@ -29,7 +29,7 @@ route.post('/', async (req, res) => {
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
+      .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
       .setTimestamp();
 
     if (!channel) return res.status(500).send('Channel not found.');
