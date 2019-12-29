@@ -29,7 +29,7 @@ route.post('/', async (req, res) => {
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+      .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${(game) ? 'GAME - ' : ''}${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
       .setTimestamp();
 
     if (!channel) return res.status(500).send('Channel not found.');
@@ -66,7 +66,7 @@ route.post('/', async (req, res) => {
               .setTitle(name)
               .setImage(data.url)
               .setURL(data.url)
-              .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+              .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${(game) ? 'GAME - ' : ''}${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
               .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
               .setTimestamp();
             await reactMessage.edit('', { embed: seriesEmbed });
