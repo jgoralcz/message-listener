@@ -26,7 +26,7 @@ route.post('/', async (req, res) => {
 
     if (!channel) return;
 
-    const reactMessage = await channel.send('<:success:473906375064420362> = SFW <:failure:473906403019456522> = DELETE <:blacklist:473914756827316236> = NSFW', embed);
+    const reactMessage = await channel.send('<:success:473906375064420362> = SFW <:blacklist:473914756827316236> = NSFW <:failure:473906403019456522> = DELETE', embed);
 
     const filter = (reaction, user) => (
       reaction.emoji.id === APPROVE
