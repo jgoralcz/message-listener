@@ -29,7 +29,7 @@ route.post('/', async (req, res) => {
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .setDescription(`${series} - ${((nsfw) ? 'nsfw' : 'sfw').toUpperCase()}\n${body}\n\n${description}`)
+      .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
       .setTimestamp();
 
     if (!channel) return res.status(500).send('Channel not found.');
@@ -59,9 +59,17 @@ route.post('/', async (req, res) => {
       switch (r.emoji.id) {
         case APPROVE:
           try {
-            await bongoBotAPI.post('/characters', req.body).catch((error) => logger.error(error));
+            const { status, data } = await bongoBotAPI.post('/characters', req.body).catch((error) => logger.error(error));
             const uploadUser = await client.fetchUser(uploader);
 
+            const characterEmbed = new RichEmbed()
+              .setTitle(name)
+              .setImage(data.url)
+              .setURL(data.url)
+              .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+              .setFooter(member.id, member.displayAvatarURL)
+              .setTimestamp();
+            await reactMessage.edit('', { embed: characterEmbed });
             uploadUser.send(`\`✅\` | Thanks for uploading **${name}** from **${series}**!`);
           } catch (error) {
             logger.error(error);

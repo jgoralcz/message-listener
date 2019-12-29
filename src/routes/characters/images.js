@@ -62,6 +62,7 @@ route.post('/', async (req, res) => {
               .setImage(data.url)
               .setURL(data.url)
               .setDescription(`${series} - SFW\n${body}`)
+              .setFooter(member.id, member.displayAvatarURL)
               .setTimestamp();
             await reactMessage.edit('', { embed: nsfwEmbed });
           } catch (error) {
@@ -94,6 +95,7 @@ route.post('/', async (req, res) => {
               .setImage(data.url)
               .setURL(data.url)
               .setDescription(`${series} - NSFW\n${body}`)
+              .setFooter(member.id, member.displayAvatarURL)
               .setTimestamp();
             await reactMessage.edit('', { embed: nsfwEmbed });
           } catch (error) {

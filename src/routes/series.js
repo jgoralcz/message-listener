@@ -59,8 +59,17 @@ route.post('/', async (req, res) => {
       switch (r.emoji.id) {
         case APPROVE:
           try {
-            await bongoBotAPI.post('/series', req.body);
+            const { status, data } = await bongoBotAPI.post('/series', req.body);
             const uploadUser = await client.fetchUser(uploader);
+
+            const seriesEmbed = new RichEmbed()
+              .setTitle(name)
+              .setImage(data.url)
+              .setURL(data.url)
+              .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+              .setFooter(member.id, member.displayAvatarURL)
+              .setTimestamp();
+            await reactMessage.edit('', { embed: seriesEmbed });
 
             uploadUser.send(`\`✅\` | Thanks for uploading the series **${name}**!`);
           } catch (error) {
