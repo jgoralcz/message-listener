@@ -25,11 +25,13 @@ route.post('/', async (req, res) => {
       return res.sendStatus(400).send({ error: `Invalid character: ${JSON.stringify(req.body)}` });
     }
 
+    const gender = (unknownGender) ? '?' : (husbando) ? 'male' : 'female';
+
     const embed = new RichEmbed()
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+      .setDescription(`${series} - ${gender} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
       .setTimestamp();
 
     if (!channel) return res.status(500).send('Channel not found.');
@@ -66,7 +68,7 @@ route.post('/', async (req, res) => {
               .setTitle(name)
               .setImage(data.url)
               .setURL(data.url)
-              .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+              .setDescription(`${series} - ${gender} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
               .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
               .setTimestamp();
             await reactMessage.edit('', { embed: characterEmbed });
