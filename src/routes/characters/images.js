@@ -67,6 +67,7 @@ route.post('/', async (req, res) => {
             await reactMessage.edit('', { embed: nsfwEmbed });
           } catch (error) {
             logger.error(error);
+            await reactMessage.edit('`❌` | An error occurred with this image...');
           }
           collector.stop();
           break;
@@ -80,6 +81,7 @@ route.post('/', async (req, res) => {
             logger.info(`Deleted ${name}, ${series}, ${imageURL}`);
           } catch (error) {
             logger.error(error);
+            await reactMessage.edit('`❌` | An error occurred with this image...');
           }
           collector.stop();
           break;
@@ -100,6 +102,7 @@ route.post('/', async (req, res) => {
             await reactMessage.edit('', { embed: nsfwEmbed });
           } catch (error) {
             logger.error(error);
+            await reactMessage.edit('`❌` | An error occurred with this image...');
           }
           collector.stop();
           break;
