@@ -12,8 +12,7 @@ const { resetGuildLeaver, resetSuperBongo, updateGuildPatron, updateSuperBongo }
 const run = (client) => {
   // check for role updates.
   client.on('guildMemberUpdate', async (oldMember, newMember) => {
-    if (oldMember.roles && oldMember.roles.size >= 0 && newMember.roles.size >= 0
-      && oldMember.roles.size === newMember.roles.size) return undefined;
+    if (oldMember.roles && newMember.roles && oldMember.roles.size === newMember.roles.size) return undefined;
 
     // new members
     if (!oldMember.roles.get(superBongo) && newMember.roles.get(superBongo)) {
