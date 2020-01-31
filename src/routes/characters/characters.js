@@ -6,22 +6,23 @@ const logger = log4js.getLogger();
 
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
-const { characterChannel, voteChannel } = require('../../../config.json');
+const { characterChannels: { pending, accepted, denied } } = require('../../../config.json');
 const { reviewer } = require('../../util/constants/roles');
 
 const { APPROVE, DENY, BETTER_DESCRIPTION_NEEEDED, BETTER_IMAGE_NEEDED, BETTER_EVERYTHING_NEEDED } = require('../../util/constants/emojis');
 
 route.post('/', async (req, res) => {
   try {
-    const channel = client.channels.get(characterChannel);
-    const channelVote = client.channels.get(voteChannel);
+    const channelPending = client.channels.get(pending);
+    const channelAccept = client.channels.get(accepted);
+    const channelDenied = client.channels.get(denied);
 
     const {
       name, series, body, imageURL, uploader, description, husbando, unknownGender, nsfw,
     } = req.body;
 
     if (!name || !series || !imageURL || !uploader || !description || husbando == null || unknownGender == null || nsfw == null) {
-      channelVote.send(`Could not upload character: ${name}, ${series} from ${uploader}.`).catch((error) => logger.error(error));
+      channelDenied.send(`Could not upload character: ${name}, ${series} from ${uploader}.`).catch((error) => logger.error(error));
       return res.status(400).send({ error: `Invalid character: ${JSON.stringify(req.body)}` });
     }
 
@@ -34,9 +35,9 @@ route.post('/', async (req, res) => {
       .setDescription(`${series} - ${gender} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
       .setTimestamp();
 
-    if (!channel) return res.status(500).send('Channel not found.');
+    if (!channelPending) return res.status(500).send('Channel not found.');
 
-    const reactMessage = await channel.send(`<:success:473906375064420362> = GOOD **|** <:failure:473906403019456522> = DELETE **|** ${BETTER_IMAGE_NEEDED} = BETTER IMAGE NEEDED **|** ${BETTER_DESCRIPTION_NEEEDED} = BETTER DESCRIPTION NEEDED **|** ${BETTER_EVERYTHING_NEEDED} = BETTER SOMETHING ELSE NEEDED`, { embed });
+    const reactMessage = await channelPending.send(`<:success:473906375064420362> = GOOD **|** <:failure:473906403019456522> = DELETE **|** ${BETTER_IMAGE_NEEDED} = BETTER IMAGE NEEDED **|** ${BETTER_DESCRIPTION_NEEEDED} = BETTER DESCRIPTION NEEDED **|** ${BETTER_EVERYTHING_NEEDED} = BETTER SOMETHING ELSE NEEDED`, { embed });
 
     const filter = (reaction, user) => (
       reaction.emoji.id === APPROVE
@@ -76,7 +77,8 @@ route.post('/', async (req, res) => {
             .setDescription(`${series} - ${gender} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
             .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
             .setTimestamp();
-          await reactMessage.edit('', { embed: characterEmbed });
+          await channelAccept.send({ embed: characterEmbed });
+          await reactMessage.delete();
           uploadUser.send(`\`✅\` | Thanks for uploading **${name}** from **${series}**!`);
         } catch (error) {
           logger.error(error);
@@ -86,8 +88,10 @@ route.post('/', async (req, res) => {
       }
       if (r.emoji.id === DENY) {
         try {
-          await reactMessage.delete();
           logger.info(`Deleted ${name}, ${series}, ${imageURL}`);
+
+          await channelDenied.send(embed);
+          await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series}** has been denied. You can still make a custom waifu out of them using the \`customwaifu\` command.`);
@@ -99,9 +103,11 @@ route.post('/', async (req, res) => {
       }
       if (r.emoji.name === BETTER_DESCRIPTION_NEEEDED) {
         try {
-          await reactMessage.delete();
           logger.info(`Deleted ${name}, ${series}, ${imageURL}`);
 
+          await channelDenied.send(embed);
+
+          await reactMessage.delete();
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better description**. You can upload a better description and undergo a new review. Thank you!`);
         } catch (error) {
@@ -112,8 +118,10 @@ route.post('/', async (req, res) => {
       }
       if (r.emoji.name === BETTER_IMAGE_NEEDED) {
         try {
-          await reactMessage.delete();
           logger.info(`Deleted ${name}, ${series}, ${imageURL}`);
+
+          await channelDenied.send(embed);
+          await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better image**. You can upload a better image and undergo a new review. Thank you!`);
@@ -125,8 +133,10 @@ route.post('/', async (req, res) => {
       }
       if (r.emoji.name === BETTER_EVERYTHING_NEEDED) {
         try {
-          await reactMessage.delete();
           logger.info(`Deleted ${name}, ${series}, ${imageURL}`);
+
+          await channelDenied.send(embed);
+          await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs several better properties.** You can try fixing the mistakes or join the main server to discuss. Thank you!`);
