@@ -2,8 +2,6 @@ const { RichEmbed, Attachment } = require('discord.js');
 const route = require('express-promise-router')();
 const log4js = require('log4js');
 
-const logger = log4js.getLogger();
-
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { imageChannels: { pending, accepted, denied } } = require('../../../config.json');
@@ -16,6 +14,8 @@ const {
   NSFW,
   KEEP_NSFW_IMAGE_NOT_CROPPED,
 } = require('../../util/constants/emojis');
+
+const logger = log4js.getLogger();
 
 const croppedDiscordImageOther = async (bot, id, buffer, imageURLClean) => {
   const channel = bot.channels.get(OTHER_IMAGES);
@@ -101,6 +101,7 @@ route.post('/', async (req, res) => {
             .setTimestamp();
 
           if (data.urlCropped) {
+            sfwEmbed.attachFile(data.urlCropped);
             sfwEmbed.setThumbnail(data.urlCropped);
           }
 
