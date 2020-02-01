@@ -16,7 +16,7 @@ const { LOCAL, PROD, TEST } = require('./util/constants/environments');
 
 const logger = log4js.getLogger();
 
-const port = 8443;
+const port = 8442;
 
 const env = process.env.NODE_ENV || LOCAL;
 

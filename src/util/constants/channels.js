@@ -1,0 +1,4 @@
+module.exports = Object.freeze({
+  MAIN_IMAGE: '473906375064420362',
+  OTHER_IMAGES: '672280816725917698',
+});

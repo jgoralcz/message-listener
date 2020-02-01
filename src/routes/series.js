@@ -85,11 +85,19 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
+      const seriesFailedEmbed = new RichEmbed()
+        .setTitle(name)
+        .setImage(imageURL)
+        .setURL(imageURL)
+        .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${(game) ? 'GAME - ' : ''}${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+        .setTimestamp();
+
       if (r.emoji.id === DENY) {
         try {
-          logger.info(`Deleted ${name}, ${imageURL}`);
+          logger.info(`Deleted: ${name}, ${imageURL}`);
 
-          await channelDenied.send({ embed });
+          await channelDenied.send(seriesFailedEmbed);
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
@@ -100,11 +108,12 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
       if (r.emoji.name === BETTER_DESCRIPTION_NEEEDED) {
         try {
-          logger.info(`Deleted ${name}, ${imageURL}`);
+          logger.info(`Deleted: ${name}, ${imageURL}`);
 
-          await channelDenied.send({ embed });
+          await channelDenied.send(seriesFailedEmbed);
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
@@ -115,11 +124,12 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
       if (r.emoji.name === BETTER_IMAGE_NEEDED) {
         try {
-          logger.info(`Deleted ${name}, ${imageURL}`);
+          logger.info(`Deleted: ${name}, ${imageURL}`);
 
-          await channelDenied.send({ embed });
+          await channelDenied.send(seriesFailedEmbed);
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
@@ -130,11 +140,12 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
       if (r.emoji.name === BETTER_EVERYTHING_NEEDED) {
         try {
-          logger.info(`Deleted ${name}, ${imageURL}`);
+          logger.info(`Deleted: ${name}, ${imageURL}`);
 
-          await channelDenied.send({ embed });
+          await channelDenied.send(seriesFailedEmbed);
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
