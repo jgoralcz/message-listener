@@ -115,7 +115,7 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          await croppedDiscordImageOther(client, data.id, buffer, data.urlCropped).catch((error) => logger.error(error));
+          await croppedDiscordImage(client, data.id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
           uploadUser.send(`\`✅\` | Thanks for uploading **${name}** from **${series}**!`);
         } catch (error) {
