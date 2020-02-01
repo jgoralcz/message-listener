@@ -27,7 +27,7 @@ const croppedDiscordImageOther = async (bot, id, buffer, imageURLClean) => {
   if (myMessage && myMessage.attachments && myMessage.attachments.first
     && myMessage.attachments.first() && myMessage.attachments.first().proxyURL) {
     const uri = myMessage.attachments.first().proxyURL;
-    await bongoBotAPI.patch(`/images/${id}/clean-discord`, { uri });
+    await bongoBotAPI.patch(`/images/${id}/clean-discord`, { uri }).catch((error) => logger.error(error));
   }
 };
 
@@ -102,13 +102,12 @@ route.post('/', async (req, res) => {
 
           if (data.urlCropped) {
             sfwEmbed.attachFile(data.urlCropped);
-            sfwEmbed.setThumbnail(data.urlCropped);
           }
 
           await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: sfwEmbed });
           await reactMessage.delete();
 
-          await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
+          await croppedDiscordImageOther(client, data.id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`✅\` | Your SFW (safe for work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
@@ -135,7 +134,7 @@ route.post('/', async (req, res) => {
           await channelAccept.send({ embed: sfwEmbed });
           await reactMessage.delete();
 
-          await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
+          await croppedDiscordImageOther(client, data.id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`✅\` | Your SFW (safe for work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
@@ -185,7 +184,7 @@ route.post('/', async (req, res) => {
             .setTimestamp();
 
           if (data.urlCropped) {
-            nsfwEmbed.setThumbnail(data.urlCropped);
+            nsfwEmbed.attachFile(data.urlCropped);
           }
 
           await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: nsfwEmbed });
