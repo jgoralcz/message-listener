@@ -1,6 +1,8 @@
 const { RichEmbed, Attachment } = require('discord.js');
 const route = require('express-promise-router')();
 const log4js = require('log4js');
+
+const { imageIdentifier } = require('../../util/constants/ImageIdentifier');
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { characterChannels: { pending, accepted, denied } } = require('../../../config.json');
@@ -40,9 +42,15 @@ route.post('/', async (req, res) => {
       name, series, body, imageURL, uploader, description, husbando, unknownGender, nsfw,
     } = req.body;
 
+    const reqBody = req.body;
+    reqBody.crop = true;
+    reqBody.desiredWidth = 300;
+    reqBody.desiredHeight = 467;
+
     if (!name || !series || !imageURL || !uploader || !description || husbando == null || unknownGender == null || nsfw == null) {
       channelDenied.send(`Could not upload character: ${name}, ${series} from ${uploader}.`).catch((error) => logger.error(error));
-      return res.status(400).send({ error: `Invalid character: ${JSON.stringify(req.body)}` });
+      res.status(400).send({ error: `Invalid character: ${JSON.stringify(req.body)}` });
+      return;
     }
 
     let buffer = '';
@@ -61,11 +69,14 @@ route.post('/', async (req, res) => {
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .attachFile(new Attachment(Buffer.from(buffer), 'cropped.gif'))
+      .attachFile(new Attachment(Buffer.from(buffer), `cropped.${imageIdentifier(buffer) || 'gif'}`))
       .setDescription(`${series} - ${gender} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
       .setTimestamp();
 
-    if (!channelPending) return res.status(500).send('Channel not found.');
+    if (!channelPending) {
+      res.status(500).send('Channel not found.');
+      return;
+    }
     const reactMessage = await channelPending.send(`<:success:473906375064420362> = GOOD **|** <:failure:473906403019456522> = DELETE **|** ${BETTER_IMAGE_NEEDED} = BETTER IMAGE (OR CROPPED IMAGE) NEEDED **|** ${BETTER_DESCRIPTION_NEEEDED} = BETTER DESCRIPTION NEEDED **|** ${BETTER_EVERYTHING_NEEDED} = BETTER SOMETHING ELSE NEEDED`, { embed });
 
     const filter = (reaction, user) => (
@@ -96,7 +107,7 @@ route.post('/', async (req, res) => {
 
       if (r.emoji.id === APPROVE) {
         try {
-          const { status, data } = await bongoBotAPI.post('/characters', req.body).catch((error) => logger.error(error));
+          const { status, data } = await bongoBotAPI.post('/characters', reqBody).catch((error) => logger.error(error));
 
           const characterEmbed = new RichEmbed()
             .setTitle(name)
@@ -105,11 +116,6 @@ route.post('/', async (req, res) => {
             .setDescription(`${series} - ${gender} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
             .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
             .setTimestamp();
-
-          if (data.urlCropped) {
-            characterEmbed.attachFile(data.urlCropped);
-            characterEmbed.setThumbnail(data.urlCropped);
-          }
 
           await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: characterEmbed });
           await reactMessage.delete();
@@ -171,7 +177,7 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better image**. You can upload a better image and undergo a new review. Thank you!`);
+          uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better image**. You can upload a better image and undergo a new review. It may be the case where you need to crop the image. **If that's so you can do \`@Bongo#3445 crop image_url_goes_here 300 467\` to see what it looks like beforehand.**\nThank you!`);
         } catch (error) {
           logger.error(error);
         }

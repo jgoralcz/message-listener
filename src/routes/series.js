@@ -6,7 +6,7 @@ const logger = log4js.getLogger();
 
 const client = require('../index');
 const { bongoBotAPI } = require('../services/bongo');
-const { seriesChannel: { pending, accepted, denied } } = require('../../config.json');
+const { seriesChannels: { pending, accepted, denied } } = require('../../config.json');
 const { reviewer } = require('../util/constants/roles');
 
 const { APPROVE, DENY, BETTER_DESCRIPTION_NEEEDED, BETTER_IMAGE_NEEDED, BETTER_EVERYTHING_NEEDED } = require('../util/constants/emojis');

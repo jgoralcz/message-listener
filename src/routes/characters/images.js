@@ -2,6 +2,7 @@ const { RichEmbed, Attachment } = require('discord.js');
 const route = require('express-promise-router')();
 const log4js = require('log4js');
 
+const { imageIdentifier } = require('../../util/constants/ImageIdentifier');
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { imageChannels: { pending, accepted, denied } } = require('../../../config.json');
@@ -55,7 +56,7 @@ route.post('/', async (req, res) => {
       .setTitle(name)
       .setImage(imageURL)
       .setURL(imageURL)
-      .attachFile(new Attachment(Buffer.from(buffer), 'cropped.gif'))
+      .attachFile(new Attachment(Buffer.from(buffer), `cropped.${imageIdentifier(buffer) || 'gif'}`))
       .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
       .setTimestamp();
 
@@ -107,7 +108,7 @@ route.post('/', async (req, res) => {
           await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: sfwEmbed });
           await reactMessage.delete();
 
-          await croppedDiscordImageOther(client, data.id, buffer, data.urlCropped).catch((error) => logger.error(error));
+          await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`✅\` | Your SFW (safe for work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
@@ -134,7 +135,7 @@ route.post('/', async (req, res) => {
           await channelAccept.send({ embed: sfwEmbed });
           await reactMessage.delete();
 
-          await croppedDiscordImageOther(client, data.id, buffer, data.urlCropped).catch((error) => logger.error(error));
+          await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`✅\` | Your SFW (safe for work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
