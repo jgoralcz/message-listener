@@ -135,8 +135,6 @@ route.post('/', async (req, res) => {
           await channelAccept.send({ embed: sfwEmbed });
           await reactMessage.delete();
 
-          await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
-
           const uploadUser = await client.fetchUser(uploader);
           uploadUser.send(`\`✅\` | Your SFW (safe for work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
         } catch (error) {
@@ -187,6 +185,8 @@ route.post('/', async (req, res) => {
           if (data.urlCropped) {
             nsfwEmbed.attachFile(data.urlCropped);
           }
+
+          await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
           await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: nsfwEmbed });
           await reactMessage.delete();
