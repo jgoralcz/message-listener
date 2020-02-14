@@ -91,6 +91,7 @@ route.post('/', async (req, res) => {
         .setImage(imageURL)
         .setURL(imageURL)
         .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${(game) ? 'GAME - ' : ''}${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
+        .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
         .setTimestamp();
 
       if (r.emoji.id === DENY) {

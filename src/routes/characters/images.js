@@ -145,17 +145,18 @@ route.post('/', async (req, res) => {
         return;
       }
 
-      const embedDenied = new RichEmbed()
-        .setTitle(name)
-        .setImage(imageURL)
-        .setURL(imageURL)
-        .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
-        .setTimestamp();
-
       if (r.emoji.id === DENY) {
         try {
           // await bongoBotAPI.delete(`/images/${id}`);
           logger.info(`Deleted: ${name}, ${series}, ${imageURL}`);
+
+          const embedDenied = new RichEmbed()
+            .setTitle(name)
+            .setImage(imageURL)
+            .setURL(imageURL)
+            .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
+            .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+            .setTimestamp();
 
           await channelDenied.send(embedDenied);
           await reactMessage.delete();
