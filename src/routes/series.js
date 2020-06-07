@@ -6,8 +6,11 @@ const logger = log4js.getLogger();
 
 const client = require('../index');
 const { bongoBotAPI } = require('../services/bongo');
-const { seriesChannels: { pending, accepted, denied } } = require('../../config.json');
+const { config } = require('../util/constants/paths');
 const { reviewer } = require('../util/constants/roles');
+
+// eslint-disable-next-line import/no-dynamic-require
+const { seriesChannels: { pending, accepted, denied } } = require(config);
 
 const { APPROVE, DENY, BETTER_DESCRIPTION_NEEEDED, BETTER_IMAGE_NEEDED, BETTER_EVERYTHING_NEEDED } = require('../util/constants/emojis');
 
@@ -45,7 +48,7 @@ route.post('/', async (req, res) => {
       || reaction.emoji.name === BETTER_EVERYTHING_NEEDED
     ) && !user.bot;
 
-    const collector = reactMessage.createReactionCollector(filter, { time: 60000000 });
+    const collector = reactMessage.createReactionCollector(filter, { time: 8.64e+7 });
 
     await reactMessage.react(APPROVE);
     await reactMessage.react(DENY);
@@ -65,7 +68,7 @@ route.post('/', async (req, res) => {
 
       if (r.emoji.id === APPROVE) {
         try {
-          const { status, data } = await bongoBotAPI.post('/series', req.body);
+          const { data } = await bongoBotAPI.post('/series', req.body);
 
           const seriesEmbed = new RichEmbed()
             .setTitle(name)

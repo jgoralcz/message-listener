@@ -1,7 +1,10 @@
 const route = require('express-promise-router')();
 
 const client = require('../index');
-const { voteChannel } = require('../../config.json');
+const { config } = require('../util/constants/paths');
+
+// eslint-disable-next-line import/no-dynamic-require
+const { voteChannel } = require(config);
 
 route.post('/', async (req, res) => {
   const channel = client.channels.get(voteChannel);

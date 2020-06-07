@@ -5,7 +5,7 @@ const log4js = require('log4js');
 const { imageIdentifier } = require('../../util/constants/ImageIdentifier');
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
-const { imageChannels: { pending, accepted, denied } } = require('../../../config.json');
+const { config } = require('../../util/constants/paths');
 const { reviewer } = require('../../util/constants/roles');
 const { OTHER_IMAGES } = require('../../util/constants/channels');
 const {
@@ -15,6 +15,9 @@ const {
   NSFW,
   KEEP_NSFW_IMAGE_NOT_CROPPED,
 } = require('../../util/constants/emojis');
+
+// eslint-disable-next-line import/no-dynamic-require
+const { imageChannels: { pending, accepted, denied } } = require(config);
 
 const logger = log4js.getLogger();
 
@@ -71,7 +74,7 @@ route.post('/', async (req, res) => {
       || reaction.emoji.id === KEEP_NSFW_IMAGE_NOT_CROPPED
     ) && !user.bot;
 
-    const collector = reactMessage.createReactionCollector(filter, { time: 60000000 });
+    const collector = reactMessage.createReactionCollector(filter, { time: 8.64e+7 });
 
     await reactMessage.react(APPROVE);
     await reactMessage.react(KEEP_SFW_IMAGE_NOT_CROPPED);

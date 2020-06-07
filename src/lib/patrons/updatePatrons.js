@@ -1,12 +1,13 @@
 const log4js = require('log4js');
 
 const logger = log4js.getLogger();
-
-const { owner } = require('../../../config');
 const { bongoBotAPI } = require('../../services/bongo');
-
 const { matchID } = require('../../util/constants/roles');
 const { getPatronIDByName } = require('./patronByID');
+const { config } = require('../../util/constants/paths');
+
+// eslint-disable-next-line import/no-dynamic-require
+const { owner } = require(config);
 
 const thanks = (role) => `Thank you for becoming a ${role} Patron! <:yayyy:594449175534632967>. To properly set you up, I will need you to use the \`@Bongo#3445 id\` command **IN YOUR SERVER** and **paste** the results here.`;
 const setupMessage = 'I have set your server up! You can now use the `serversettings` command to customize your perks. If I made a mistake please be sure to send a message in the official Bongo Support server https://discord.gg/dfajqcZ.\n**Please do not leave the server otherwise you may lose your perks automatically!**';
