@@ -5,7 +5,6 @@ const log4js = require('log4js');
 const { imageIdentifier } = require('../../util/constants/ImageIdentifier');
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
-const { characterChannels: { pending, accepted, denied } } = require('../../../config.json');
 const { reviewer } = require('../../util/constants/roles');
 const { MAIN_IMAGE } = require('../../util/constants/channels');
 const {
@@ -15,6 +14,11 @@ const {
   BETTER_IMAGE_NEEDED,
   BETTER_EVERYTHING_NEEDED,
 } = require('../../util/constants/emojis');
+
+const { config } = require('../../util/constants/paths');
+
+// eslint-disable-next-line import/no-dynamic-require
+const { characterChannels: { pending, accepted, denied } } = require(config);
 
 const logger = log4js.getLogger();
 
@@ -87,7 +91,7 @@ route.post('/', async (req, res) => {
       || reaction.emoji.name === BETTER_EVERYTHING_NEEDED
     ) && !user.bot;
 
-    const collector = reactMessage.createReactionCollector(filter, { time: 60000000 });
+    const collector = reactMessage.createReactionCollector(filter, { time: 8.64e+7 });
 
     await reactMessage.react(APPROVE);
     await reactMessage.react(DENY);

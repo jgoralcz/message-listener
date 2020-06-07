@@ -1,8 +1,10 @@
 require('./server.js');
 const { Client } = require('discord.js');
 const log4js = require('log4js');
+const { basicAuth: loginToken } = require('./util/constants/paths');
 
-const { token } = require('../config.json');
+const { token } = require(loginToken);
+
 const events = require('./events/index');
 
 const logger = log4js.getLogger();
