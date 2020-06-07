@@ -50,4 +50,4 @@ spec:
             secretName: messenger-auth.json
         - name: config
           configMap:
-            name: messenger-config.json
+            name: ${PREFIX}messenger-config.json
