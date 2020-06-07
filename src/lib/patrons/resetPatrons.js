@@ -1,9 +1,12 @@
 const log4js = require('log4js');
 
 const logger = log4js.getLogger();
-
-const { owner } = require('../../../config');
 const { bongoBotAPI } = require('../../services/bongo');
+const { config } = require('../../util/constants/paths');
+
+// eslint-disable-next-line import/no-dynamic-require
+const { owner } = require(config);
+
 
 const { getPatronIDByName } = require('./patronByID');
 
