@@ -94,7 +94,7 @@ route.post('/', async (req, res) => {
 
       if (r.emoji.id === APPROVE) {
         try {
-          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: false, uploader, id, crop: true }).catch((error) => logger.error(error));
+          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: false, uploader, id, crop: true });
 
           const sfwEmbed = new RichEmbed()
             .setTitle(name)
@@ -125,7 +125,7 @@ route.post('/', async (req, res) => {
 
       if (r.emoji.id === KEEP_SFW_IMAGE_NOT_CROPPED) {
         try {
-          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: false, uploader, id, crop: false }).catch((error) => logger.error(error));
+          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: false, uploader, id, crop: false });
 
           const sfwEmbed = new RichEmbed()
             .setTitle(name)
@@ -176,7 +176,7 @@ route.post('/', async (req, res) => {
 
       if (r.emoji.id === NSFW) {
         try {
-          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: true, uploader, id, crop: true }).catch((error) => logger.error(error));
+          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: true, uploader, id, crop: true });
 
           const nsfwEmbed = new RichEmbed()
             .setTitle(name)
@@ -204,9 +204,10 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
       if (r.emoji.id === KEEP_NSFW_IMAGE_NOT_CROPPED) {
         try {
-          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: true, uploader, id, crop: false }).catch((error) => logger.error(error));
+          const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: true, uploader, id, crop: false });
 
           const nsfwEmbed = new RichEmbed()
             .setTitle(name)
@@ -226,7 +227,6 @@ route.post('/', async (req, res) => {
           await reactMessage.edit('`❌` | An error occurred with this image...');
         }
         collector.stop();
-        return;
       }
     };
 
