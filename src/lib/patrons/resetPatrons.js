@@ -24,7 +24,7 @@ const resetSuperBongo = async (client, leftMember, patronType) => {
     logger.error(`Could not remove ${leftMember.id} - ${patronType}`);
 
     const ownerUser = await client.fetchUser(owner);
-    ownerUser.send(`Could not remove ${leftMember.id} - ${patronType}`);
+    ownerUser.send(`Could not remove ${leftMember.id} - ${patronType}`).catch((err) => logger.error(err));
   }
   leftMember.send(thanksGoodbye(patronType)).catch((error) => logger.error(error));
 };
@@ -40,7 +40,7 @@ const resetGuildLeaver = async (client, leftMember, patronType) => {
     logger.error(`Could not remove ${leftMember.id} - ${patronType}`);
 
     const ownerUser = await client.fetchUser(owner);
-    ownerUser.send(`Could not remove ${leftMember.id} - ${patronType}`);
+    ownerUser.send(`Could not remove ${leftMember.id} - ${patronType}`).catch((err) => logger.error(err));
   }
 
   leftMember.send(thanksGoodbye(patronType)).catch((error) => logger.error(error));
