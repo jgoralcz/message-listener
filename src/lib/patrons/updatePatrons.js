@@ -40,7 +40,7 @@ const awaitUserMessage = async (client, newMember, patronType) => {
       logger.error(`Could not add ${newMember.id} - ${patronType}`);
 
       const ownerUser = await client.fetchUser(owner);
-      ownerUser.send(`Could not add ${newMember.id} - ${patronType}`);
+      ownerUser.send(`Could not add ${newMember.id} - ${patronType}`).catch((err) => logger.error(err));
     }
   });
 };
@@ -56,7 +56,7 @@ const updateSuperBongo = async (client, member, patronType) => {
     logger.error(`Could not add ${member.id} - ${patronType}`);
 
     const ownerUser = await client.fetchUser(owner);
-    ownerUser.send(`Could not add ${member.id} - ${patronType}`);
+    ownerUser.send(`Could not add ${member.id} - ${patronType}`).catch((err) => logger.error(err));
   }
   await member.send('Thank you for becoming a Super Bongo Patron! <:yayyy:594449175534632967> I have automatically set you up. If I made a mistake please send a message in the offical server.\n**Please do not leave the server otherwise you may lose your perks automatically!**').catch((error) => logger.error(error));
 };
