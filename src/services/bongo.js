@@ -11,6 +11,7 @@ const bongoBotAPI = axios.create({
   baseURL: api,
   auth: { username, password },
   headers: { 'Content-type': 'application/json' },
+  validateStatus: () => true,
 });
 
 module.exports = {

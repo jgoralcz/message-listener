@@ -1,16 +1,25 @@
 require('./server.js');
-const { Client } = require('discord.js');
+const { Client, Intents } = require('discord.js');
 const log4js = require('log4js');
-const { basicAuth: loginToken } = require('./util/constants/paths');
+const { basicAuth: loginToken, config } = require('./util/constants/paths');
 
 // eslint-disable-next-line import/no-dynamic-require
 const { token } = require(loginToken);
+// eslint-disable-next-line import/no-dynamic-require
+const { owner } = require(config);
 
 const events = require('./events/index');
 
 const logger = log4js.getLogger();
 
-const client = new Client();
+const myIntents = new Intents();
+myIntents.add('GUILDS', 'GUILD_EMOJIS', 'GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES');
+
+const client = new Client({
+  ws: {
+    intents: myIntents,
+  },
+});
 
 client.on('ready', async () => {
   logger.info(`Logged in as ${client.user.tag}.`);
@@ -20,8 +29,10 @@ client.on('ready', async () => {
   await events(client);
 });
 
-client.on('error', (error) => {
+client.on('error', async (error) => {
+  const ownerUser = await client.fetchUser(owner);
   logger.error(error);
+  ownerUser.send(error).catch((err) => logger.error(err));
 });
 
 client.login(token).catch((error) => logger.error(error));

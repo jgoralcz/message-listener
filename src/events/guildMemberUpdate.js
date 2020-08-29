@@ -7,7 +7,12 @@ const {
 
 const logger = log4js.getLogger();
 
-const { resetGuildLeaver, resetSuperBongo, updateGuildPatron, updateSuperBongo } = require('../lib');
+const {
+  resetGuildLeaver,
+  resetSuperBongo,
+  updateGuildPatron,
+  updateSuperBongo,
+} = require('../lib');
 
 const run = (client) => {
   // check for role updates.
