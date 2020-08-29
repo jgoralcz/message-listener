@@ -189,7 +189,11 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
+<<<<<<< HEAD
           await uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better image**. You can upload a better image and undergo a new review. It may be the case where you need to crop the image. **If that's so you can do \`@Bongo#3445 crop image_url_goes_here ${IMAGE_DEFAULT_DIMENSIONS.WIDTH} ${IMAGE_DEFAULT_DIMENSIONS.HEIGHT}\` to see what it looks like beforehand.**\nThank you!`);
+=======
+          await uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better image**. You can upload a better image and undergo a new review. It may be the case where you need to crop the image. **If that's so you can do \`@Bongo#3445 crop image_url_goes_here 300 467\` to see what it looks like beforehand.**\nThank you!`);
+>>>>>>> dev
         } catch (error) {
           logger.error(error);
         }
