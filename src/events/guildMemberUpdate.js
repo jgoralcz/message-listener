@@ -1,17 +1,25 @@
-const log4js = require('log4js');
+const logger = require('log4js').getLogger();
 
 const {
-  superBongo, bongoNeko,
-  smolNeko, bongoDaddy,
+  superBongo,
+  bongoNeko,
+  smolNeko,
+  bongoDaddy,
 } = require('../util/constants/roles');
 
-const logger = log4js.getLogger();
+const {
+  resetGuildLeaver,
+  resetSuperBongo,
+  updateGuildPatron,
+  updateSuperBongo,
+} = require('../lib');
 
-const { resetGuildLeaver, resetSuperBongo, updateGuildPatron, updateSuperBongo } = require('../lib');
+const { PROD } = require('../util/constants/environments');
 
 const run = (client) => {
   // check for role updates.
   client.on('guildMemberUpdate', async (oldMember, newMember) => {
+    // they have the same roles as before
     if (oldMember.roles && newMember.roles && oldMember.roles.size === newMember.roles.size) return undefined;
 
     // new members
@@ -29,9 +37,11 @@ const run = (client) => {
 
     // special
     if (!oldMember.roles.get(bongoDaddy) && newMember.roles.get(bongoDaddy)) {
-      return oldMember.send('OwO I didn\'t expect anyone to be this nice! '
-        + 'Please come tell me which Bongo Cat you want and which servers '
-        + 'you want perks for (this is a manual process so it may take a bit).').catch((error) => logger.error(error));
+      if (process.env.NODE_ENV === PROD) {
+        return oldMember.send('OwO I didn\'t expect anyone to be this nice! '
+          + 'Please come tell me which Bongo Cat you want and which servers '
+          + 'you want perks for (this is a manual process so it may take a bit).').catch((error) => logger.error(error));
+      }
     }
 
     // removed role
@@ -46,6 +56,7 @@ const run = (client) => {
     if (oldMember.roles.get(smolNeko) && !newMember.roles.get(smolNeko)) {
       return resetGuildLeaver(client, newMember, 'Smol Neko').catch((error) => logger.error(error));
     }
+
     return undefined;
   });
 };

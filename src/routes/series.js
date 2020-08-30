@@ -12,7 +12,13 @@ const { reviewer } = require('../util/constants/roles');
 // eslint-disable-next-line import/no-dynamic-require
 const { seriesChannels: { pending, accepted, denied } } = require(config);
 
-const { APPROVE, DENY, BETTER_DESCRIPTION_NEEEDED, BETTER_IMAGE_NEEDED, BETTER_EVERYTHING_NEEDED } = require('../util/constants/emojis');
+const {
+  APPROVE,
+  DENY,
+  BETTER_DESCRIPTION_NEEEDED,
+  BETTER_IMAGE_NEEDED,
+  BETTER_EVERYTHING_NEEDED,
+} = require('../util/constants/emojis');
 
 route.post('/', async (req, res) => {
   try {
