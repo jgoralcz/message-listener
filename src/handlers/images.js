@@ -55,6 +55,8 @@ const approved = async ({
       return false;
     }
 
+    if (process.env.NODE_ENV !== PROD) return undefined;
+
     const sfwEmbed = new RichEmbed()
       .setTitle(name)
       .setImage(data.url)
@@ -75,9 +77,7 @@ const approved = async ({
     await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     const uploadUser = await client.fetchUser(uploader);
-    if (process.env.NODE_ENV === PROD) {
-      await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
-    }
+    await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
     return true;
   } catch (error) {
     logger.error(error);
@@ -108,6 +108,8 @@ const sfwNotCropped = async ({
       crop: false,
     });
 
+    if (process.env.NODE_ENV !== PROD) return undefined;
+
     const sfwEmbed = new RichEmbed()
       .setTitle(name)
       .setImage(data.url)
@@ -121,9 +123,7 @@ const sfwNotCropped = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    if (process.env.NODE_ENV === PROD) {
-      await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${notAutocropped}`);
-    }
+    await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${notAutocropped}`);
     return true;
   } catch (error) {
     logger.error(error);
@@ -154,6 +154,8 @@ const nsfwNotCropped = async ({
       crop: false,
     });
 
+    if (process.env.NODE_ENV !== PROD) return undefined;
+
     const nsfwEmbed = new RichEmbed()
       .setTitle(name)
       .setImage(data.url)
@@ -167,9 +169,7 @@ const nsfwNotCropped = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    if (process.env.NODE_ENV === PROD) {
-      await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly} ${notAutocropped}`); \
-    }
+    await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly} ${notAutocropped}`);
     return true;
   } catch (error) {
     logger.error(error);
@@ -195,6 +195,8 @@ const denied = async ({
     // await bongoBotAPI.delete(`/images/${id}`);
     logger.info(`Deleted: ${name}, ${series}, ${imageURL}`);
 
+    if (process.env.NODE_ENV !== PROD) return undefined;
+
     const embedDenied = new RichEmbed()
       .setTitle(name)
       .setImage(imageURL)
@@ -208,9 +210,7 @@ const denied = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    if (process.env.NODE_ENV === PROD) {
-      await uploadUser.send(`\`❌\` | ${imageURL} for **${name}** from **${series}** has been denied. Try to upload high quality and relevant images. Thank you!`);
-    }
+    await uploadUser.send(`\`❌\` | ${imageURL} for **${name}** from **${series}** has been denied. Try to upload high quality and relevant images. Thank you!`);
     return true;
   } catch (error) {
     logger.error(error);
@@ -241,6 +241,8 @@ const nsfwImage = async ({
       crop: true,
     });
 
+    if (process.env.NODE_ENV !== PROD) return undefined;
+
     const nsfwEmbed = new RichEmbed()
       .setTitle(name)
       .setImage(data.url)
@@ -261,9 +263,7 @@ const nsfwImage = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    if (process.env.NODE_ENV === PROD) {
-      await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly}`);
-    }
+    await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly}`);
     return true;
   } catch (error) {
     logger.error(error);
@@ -297,6 +297,8 @@ const updateMainImage = async ({
 
     const isNSFWstr = (nsfw) ? 'NSFW' : 'SFW';
 
+    if (process.env.NODE_ENV !== PROD) return undefined;
+
     const embed = new RichEmbed()
       .setTitle(name)
       .setImage(data.url)
@@ -314,9 +316,7 @@ const updateMainImage = async ({
     const discordCropURL = await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     const uploadUser = await client.fetchUser(uploader);
-    if (process.env.NODE_ENV === PROD) {
-      await uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfw ? '' : 'It will also be used as the main image! Thank you for your help'}`).catch(error => logger.error(error));
-    }
+    await uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfw ? '' : 'It will also be used as the main image! Thank you for your help'}`).catch(error => logger.error(error));
 
     if (nsfw) {
       await reactMessage.edit('`❌` | Cannot set main image as a NSFW image!');
