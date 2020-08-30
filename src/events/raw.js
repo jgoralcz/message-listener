@@ -64,7 +64,6 @@ const run = (client) => {
     ) return;
 
     try {
-
       const channel = client.channels.get(event.d.channel_id);
       if (!channel || channel.type !== 'text') return;
 

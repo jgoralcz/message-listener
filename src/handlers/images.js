@@ -4,6 +4,7 @@ const logger = require('log4js').getLogger();
 const { getBuffer } = require('../util/constants/images');
 const { bongoBotAPI } = require('../services/bongo');
 const { OTHER_IMAGES } = require('../util/constants/channels');
+const { PROD } = require('../util/constants/environments');
 
 const croppedDiscordImageOther = async (bot, id, buffer, imageURLClean) => {
   const channel = bot.channels.get(OTHER_IMAGES);
@@ -11,6 +12,7 @@ const croppedDiscordImageOther = async (bot, id, buffer, imageURLClean) => {
     logger.error(`COULD NOT FIND CHANNEL ${OTHER_IMAGES}`);
     return undefined;
   }
+
   const myMessage = await channel.send(new Attachment(Buffer.from(buffer), imageURLClean));
   if (myMessage && myMessage.attachments && myMessage.attachments.first
     && myMessage.attachments.first() && myMessage.attachments.first().proxyURL) {
@@ -18,8 +20,12 @@ const croppedDiscordImageOther = async (bot, id, buffer, imageURLClean) => {
     await bongoBotAPI.patch(`/images/${id}/clean-discord`, { uri }).catch((error) => logger.error(error));
     return uri;
   }
+
+  return undefined;
 };
 
+const notAutocropped = 'However, it could not be autocropped. You can view the image by changing your crop settings in the `mysettings` command.';
+const nsfwChannelOnly = 'You can view these images in a NSFW channel.';
 
 const approved = async ({
   client,
@@ -69,7 +75,9 @@ const approved = async ({
     await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     const uploadUser = await client.fetchUser(uploader);
-    uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+    if (process.env.NODE_ENV === PROD) {
+      await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+    }
     return true;
   } catch (error) {
     logger.error(error);
@@ -113,7 +121,9 @@ const sfwNotCropped = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+    if (process.env.NODE_ENV === PROD) {
+      await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${notAutocropped}`);
+    }
     return true;
   } catch (error) {
     logger.error(error);
@@ -136,7 +146,13 @@ const nsfwNotCropped = async ({
   uploader,
 }) => {
   try {
-    const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, { uri: imageURL, nsfw: true, uploader, id, crop: false });
+    const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
+      uri: imageURL,
+      nsfw: true,
+      uploader,
+      id,
+      crop: false,
+    });
 
     const nsfwEmbed = new RichEmbed()
       .setTitle(name)
@@ -151,7 +167,9 @@ const nsfwNotCropped = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+    if (process.env.NODE_ENV === PROD) {
+      await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly} ${notAutocropped}`); \
+    }
     return true;
   } catch (error) {
     logger.error(error);
@@ -190,7 +208,9 @@ const denied = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    uploadUser.send(`\`❌\` | ${imageURL} for **${name}** from **${series}** has been denied. Try to upload high quality and relevant images. Thank you!`);
+    if (process.env.NODE_ENV === PROD) {
+      await uploadUser.send(`\`❌\` | ${imageURL} for **${name}** from **${series}** has been denied. Try to upload high quality and relevant images. Thank you!`);
+    }
     return true;
   } catch (error) {
     logger.error(error);
@@ -241,7 +261,9 @@ const nsfwImage = async ({
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+    if (process.env.NODE_ENV === PROD) {
+      await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly}`);
+    }
     return true;
   } catch (error) {
     logger.error(error);
@@ -292,7 +314,9 @@ const updateMainImage = async ({
     const discordCropURL = await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     const uploadUser = await client.fetchUser(uploader);
-    uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+    if (process.env.NODE_ENV === PROD) {
+      await uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfw ? '' : 'It will also be used as the main image! Thank you for your help'}`).catch(error => logger.error(error));
+    }
 
     if (nsfw) {
       await reactMessage.edit('`❌` | Cannot set main image as a NSFW image!');
@@ -319,7 +343,7 @@ const updateMainImage = async ({
       return false;
     }
 
-    await channelAccept.send(`successfully set ${data.urlCropped} as main image`, { embed });
+    await channelAccept.send(`Successfully set ${data.urlCropped} as main image`, { embed });
 
     await reactMessage.delete();
     return true;

@@ -73,7 +73,7 @@ route.post('/', async (req, res) => {
   await reactMessage.react(DENY);
   await reactMessage.react(UPDATE_MAIN_IMAGE);
 
-  res.sendStatus(200);
+  return res.sendStatus(200);
 });
 
 module.exports = route;

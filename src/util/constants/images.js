@@ -1,7 +1,7 @@
 const axios = require('axios');
 const logger = require('log4js').getLogger();
 
-const MAGIC = {
+const MAGIC = Object.freeze({
   jpgNumber: 'ffd8ffe0',
   jpg2Number: 'ffd8ffe1',
   pngNumber: '89504e47',
@@ -9,7 +9,7 @@ const MAGIC = {
   jpgGeneral: 'ffd8ff',
   webm: '1f45dfa3',
   webp: '52494646',
-};
+});
 
 const getBuffer = async (url) => {
   const { status, data } = await axios.get(url, { responseType: 'arraybuffer', validateStatus: () => true });
