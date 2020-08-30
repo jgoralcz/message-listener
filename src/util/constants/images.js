@@ -1,4 +1,7 @@
-const MAGIC = {
+const axios = require('axios');
+const logger = require('log4js').getLogger();
+
+const MAGIC = Object.freeze({
   jpgNumber: 'ffd8ffe0',
   jpg2Number: 'ffd8ffe1',
   pngNumber: '89504e47',
@@ -6,6 +9,15 @@ const MAGIC = {
   jpgGeneral: 'ffd8ff',
   webm: '1f45dfa3',
   webp: '52494646',
+});
+
+const getBuffer = async (url) => {
+  const { status, data } = await axios.get(url, { responseType: 'arraybuffer', validateStatus: () => true });
+  if (status !== 200 || !data) {
+    logger.error(`uri ${url} did not return status code 200 when seeking buffer.`);
+    return undefined;
+  }
+  return Buffer.from(data);
 };
 
 const imageIdentifier = (buffer) => {
@@ -32,7 +44,14 @@ const imageIdentifier = (buffer) => {
   return '';
 };
 
+const IMAGE_DEFAULT_DIMENSIONS = Object.freeze({
+  WIDTH: 300,
+  HEIGHT: 467,
+});
+
 module.exports = {
   MAGIC,
   imageIdentifier,
+  getBuffer,
+  IMAGE_DEFAULT_DIMENSIONS,
 };

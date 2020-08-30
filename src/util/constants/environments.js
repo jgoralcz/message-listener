@@ -1,7 +1,5 @@
-const env = Object.freeze({
+module.exports = Object.freeze({
   PROD: 'PROD',
   TEST: 'TEST',
   LOCAL: 'LOCAL',
 });
-
-module.exports = env;

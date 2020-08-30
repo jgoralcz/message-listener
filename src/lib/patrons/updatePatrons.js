@@ -5,6 +5,7 @@ const { bongoBotAPI } = require('../../services/bongo');
 const { matchID } = require('../../util/constants/roles');
 const { getPatronIDByName } = require('./patronByID');
 const { config } = require('../../util/constants/paths');
+const { PROD } = require('../../util/constants/environments');
 
 // eslint-disable-next-line import/no-dynamic-require
 const { owner } = require(config);
@@ -33,7 +34,11 @@ const awaitUserMessage = async (client, newMember, patronType) => {
       const patronID = await getPatronIDByName(patronType);
 
       await bongoBotAPI.patch(`/patrons/users/${newMember.id}/guilds/${guildID}`, { patronID, guildID, type: patronType });
-      await newMember.send(setupMessage).catch((error) => logger.error(error));
+
+      if (process.env.NODE_ENV === PROD) {
+        await newMember.send(setupMessage).catch((error) => logger.error(error));
+      }
+
       collector.stop();
     } catch (error) {
       logger.error(error);
@@ -58,11 +63,16 @@ const updateSuperBongo = async (client, member, patronType) => {
     const ownerUser = await client.fetchUser(owner);
     ownerUser.send(`Could not add ${member.id} - ${patronType}`).catch((err) => logger.error(err));
   }
+
+  if (process.env.NODE_ENV !== PROD) return;
+
   await member.send('Thank you for becoming a Super Bongo Patron! <:yayyy:594449175534632967> I have automatically set you up. If I made a mistake please send a message in the offical server.\n**Please do not leave the server otherwise you may lose your perks automatically!**').catch((error) => logger.error(error));
 };
 
 const updateGuildPatron = async (client, member, patronType) => {
   logger.info(patronType, member.id, true);
+  if (process.env.NODE_ENV !== PROD) return;
+
   await member.send(thanks(patronType)).catch((error) => logger.error(error));
 
   await awaitUserMessage(client, member, patronType);
