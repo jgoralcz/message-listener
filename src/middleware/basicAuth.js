@@ -4,12 +4,7 @@ const { basicAuth: auth } = require('../util/constants/paths');
 // eslint-disable-next-line import/no-dynamic-require
 const { username, password } = require(auth);
 
-const authorizer = (user, pass, cb) => {
-  if (user === username && pass === password) {
-    return cb(null, true);
-  }
-  return cb(null, false);
-};
+const authorizer = (user, pass, cb) => cb(null, user === username && pass === password);
 
 const unauthResponse = (req) => (req.auth
   ? JSON.stringify({ error: `Credentials ${req.auth.user}:${req.auth.password} rejected` })
