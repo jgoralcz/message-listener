@@ -12,7 +12,13 @@ const { reviewer } = require('../util/constants/roles');
 // eslint-disable-next-line import/no-dynamic-require
 const { seriesChannels: { pending, accepted, denied } } = require(config);
 
-const { APPROVE, DENY, BETTER_DESCRIPTION_NEEEDED, BETTER_IMAGE_NEEDED, BETTER_EVERYTHING_NEEDED } = require('../util/constants/emojis');
+const {
+  APPROVE,
+  DENY,
+  BETTER_DESCRIPTION_NEEEDED,
+  BETTER_IMAGE_NEEDED,
+  BETTER_EVERYTHING_NEEDED,
+} = require('../util/constants/emojis');
 
 route.post('/', async (req, res) => {
   try {
@@ -25,7 +31,7 @@ route.post('/', async (req, res) => {
     } = req.body;
 
     if (!name || !imageURL || !uploader || !description || western == null || nsfw == null) {
-      channelDenied.send(`Could not upload series: ${name} from ${uploader}.`).catch((error) => logger.error(error));
+      await channelDenied.send(`Could not upload series: ${name} from ${uploader}.`).catch((error) => logger.error(error));
       return res.status(400).send({ error: `Invalid series: ${JSON.stringify(req.body)}` });
     }
 
@@ -81,7 +87,7 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          uploadUser.send(`\`✅\` | Thanks for uploading the series **${name}**!`);
+          await uploadUser.send(`\`✅\` | Thanks for uploading the series **${name}**!`);
         } catch (error) {
           logger.error(error);
         }
@@ -105,7 +111,7 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          uploadUser.send(`\`❌\` | Sorry, your submitted series **${name}** has been denied. You can still make a custom waifu and add it to its own series using the \`customwaifu\` command.`);
+          await uploadUser.send(`\`❌\` | Sorry, your submitted series **${name}** has been denied. You can still make a custom waifu and add it to its own series using the \`customwaifu\` command.`);
         } catch (error) {
           logger.error(error);
         }
