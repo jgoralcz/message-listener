@@ -13,8 +13,7 @@ const events = require('./events/index');
 const logger = log4js.getLogger();
 
 const myIntents = new Intents();
-myIntents.add('GUILDS', 'GUILD_EMOJIS', 'GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES');
-
+myIntents.add('GUILDS', 'GUILD_EMOJIS', 'GUILD_VOICE_STATES', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES');
 const client = new Client({
   ws: {
     intents: myIntents,

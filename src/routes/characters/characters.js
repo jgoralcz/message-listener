@@ -65,14 +65,12 @@ route.post('/', async (req, res) => {
       return;
     }
 
+    const { status, data: dataImage } = await bongoBotAPI.post('/mims/crop', { imageURL, width: IMAGE_DEFAULT_DIMENSIONS.WIDTH, height: IMAGE_DEFAULT_DIMENSIONS.HEIGHT }, { responseType: 'arraybuffer' });
     let buffer = '';
-    try {
-      const { status, data } = await bongoBotAPI.post('/mims/crop', { imageURL, width: IMAGE_DEFAULT_DIMENSIONS.WIDTH, height: IMAGE_DEFAULT_DIMENSIONS.HEIGHT }, { responseType: 'arraybuffer' });
-      if (data && status === 200) {
-        buffer = data;
-      }
-    } catch (error) {
-      logger.error(error);
+    if (dataImage && status === 200) {
+      buffer = dataImage;
+    } else {
+      logger.error(`could not crop image: ${status}`);
     }
 
     const gender = (unknownGender) ? '?' : (husbando) ? 'male' : 'female';
@@ -119,7 +117,14 @@ route.post('/', async (req, res) => {
 
       if (r.emoji.id === APPROVE) {
         try {
-          const { status, data } = await bongoBotAPI.post('/characters', reqBody).catch((error) => logger.error(error));
+          const { status: statusChar, data } = await bongoBotAPI.post('/characters', reqBody).catch((error) => logger.error(error));
+
+          if (status !== 201) {
+            logger.error(`${status} failed to create character`);
+            logger.error(data);
+            await reactMessage.edit('`❌` | An error occurred with this character...');
+            return;
+          }
 
           const characterEmbed = new RichEmbed()
             .setTitle(name)
@@ -166,6 +171,7 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
       if (r.emoji.name === BETTER_DESCRIPTION_NEEEDED) {
         try {
           logger.info(`Deleted: ${name}, ${series}, ${imageURL}`);
@@ -181,6 +187,7 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
       if (r.emoji.name === BETTER_IMAGE_NEEDED) {
         try {
           logger.info(`Deleted: ${name}, ${series}, ${imageURL}`);
@@ -196,6 +203,7 @@ route.post('/', async (req, res) => {
         collector.stop();
         return;
       }
+
       if (r.emoji.name === BETTER_EVERYTHING_NEEDED) {
         try {
           logger.info(`Deleted: ${name}, ${series}, ${imageURL}`);
