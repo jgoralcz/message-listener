@@ -119,8 +119,8 @@ route.post('/', async (req, res) => {
         try {
           const { status: statusChar, data } = await bongoBotAPI.post('/characters', reqBody).catch((error) => logger.error(error));
 
-          if (status !== 201) {
-            logger.error(`${status} failed to create character`);
+          if (statusChar !== 201 && statusChar !== 200) {
+            logger.error(`${statusChar} failed to create character`);
             logger.error(data);
             await reactMessage.edit('`❌` | An error occurred with this character...');
             return;
