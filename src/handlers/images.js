@@ -324,14 +324,14 @@ const updateMainImage = async ({
       return false;
     }
 
-    if (!imageURL || !data.urlCropped || !discordCropURL) {
+    if (!data.url || !data.urlCropped || !discordCropURL) {
       await reactMessage.edit('`❌` | Could not generate cropped images correctly for main image');
       await reactMessage.clearReactions().catch((error) => logger.error(error));
       return false;
     }
 
     const { status: statusUpdatedImage } = await bongoBotAPI.patch(`/characters/${id}/image`, {
-      imageURL,
+      imageURL: data.url,
       cropURL: data.urlCropped,
       discordCropURL,
     });
