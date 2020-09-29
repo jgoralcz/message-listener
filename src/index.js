@@ -20,7 +20,7 @@ const client = new Client({
   },
 });
 
-client.on('ready', async () => {
+client.once('ready', async () => {
   logger.info(`Logged in as ${client.user.tag}.`);
   logger.info(await client.generateInvite());
 
