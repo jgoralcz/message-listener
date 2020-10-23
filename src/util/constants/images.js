@@ -44,14 +44,8 @@ const imageIdentifier = (buffer) => {
   return '';
 };
 
-const IMAGE_DEFAULT_DIMENSIONS = Object.freeze({
-  WIDTH: 300,
-  HEIGHT: 467,
-});
-
 module.exports = {
   MAGIC,
   imageIdentifier,
   getBuffer,
-  IMAGE_DEFAULT_DIMENSIONS,
 };

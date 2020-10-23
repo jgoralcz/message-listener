@@ -2,7 +2,7 @@ const { RichEmbed, Attachment } = require('discord.js');
 const route = require('express-promise-router')();
 const logger = require('log4js').getLogger();
 
-const { imageIdentifier, IMAGE_DEFAULT_DIMENSIONS } = require('../../util/constants/images');
+const { imageIdentifier } = require('../../util/constants/images');
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { config } = require('../../util/constants/paths');
@@ -40,7 +40,7 @@ route.post('/', async (req, res) => {
   const { image_url_clean: mainImage } = dataCharacter;
 
   let buffer = '';
-  const { status, data } = await bongoBotAPI.post('/mims/crop', { imageURL, width: IMAGE_DEFAULT_DIMENSIONS.WIDTH, height: IMAGE_DEFAULT_DIMENSIONS.HEIGHT }, { responseType: 'arraybuffer' });
+  const { status, data } = await bongoBotAPI.post('/mims/crop', { imageURL }, { responseType: 'arraybuffer' });
   if (data && status === 200) {
     buffer = data;
   }
