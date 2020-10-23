@@ -2,7 +2,7 @@ const { RichEmbed, Attachment } = require('discord.js');
 const route = require('express-promise-router')();
 const log4js = require('log4js');
 
-const { imageIdentifier, IMAGE_DEFAULT_DIMENSIONS } = require('../../util/constants/images');
+const { imageIdentifier } = require('../../util/constants/images');
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { reviewer } = require('../../util/constants/roles');
@@ -56,8 +56,6 @@ route.post('/', async (req, res) => {
 
     const reqBody = req.body;
     reqBody.crop = true;
-    reqBody.desiredWidth = IMAGE_DEFAULT_DIMENSIONS.WIDTH;
-    reqBody.desiredHeight = IMAGE_DEFAULT_DIMENSIONS.HEIGHT;
 
     if (!name || !series || !imageURL || !uploader || !description || husbando == null || unknownGender == null || nsfw == null) {
       channelDenied.send(`Could not upload character: ${name}, ${series} from ${uploader}.`).catch((error) => logger.error(error));
@@ -65,7 +63,7 @@ route.post('/', async (req, res) => {
       return;
     }
 
-    const { status, data: dataImage } = await bongoBotAPI.post('/mims/crop', { imageURL, width: IMAGE_DEFAULT_DIMENSIONS.WIDTH, height: IMAGE_DEFAULT_DIMENSIONS.HEIGHT }, { responseType: 'arraybuffer' });
+    const { status, data: dataImage } = await bongoBotAPI.post('/mims/crop', { imageURL }, { responseType: 'arraybuffer' });
     let buffer = '';
     if (dataImage && status === 200) {
       buffer = dataImage;
@@ -73,7 +71,8 @@ route.post('/', async (req, res) => {
       logger.error(`could not crop image: ${status}`);
     }
 
-    const gender = (unknownGender) ? '?' : (husbando) ? 'male' : 'female';
+    // eslint-disable-next-line no-nested-ternary
+    const gender = unknownGender ? '?' : husbando ? 'male' : 'female';
 
     const embed = new RichEmbed()
       .setTitle(name)
@@ -196,7 +195,7 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          await uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better image**. You can upload a better image and undergo a new review. It may be the case where you need to crop the image. **If that's so you can do \`@Bongo#3445 crop image_url_goes_here ${IMAGE_DEFAULT_DIMENSIONS.WIDTH} ${IMAGE_DEFAULT_DIMENSIONS.HEIGHT}\` to see what it looks like beforehand.**\nThank you!`);
+          await uploadUser.send(`\`❌\` | Sorry, **${name}** from **${series} needs a better image**. You can upload a better image and undergo a new review. It may be the case where you need to crop the image. **If that's so you can do \`@Bongo#3445 crop image_url_goes_here\` to see what it looks like beforehand.**\nThank you!`);
         } catch (error) {
           logger.error(error);
         }
