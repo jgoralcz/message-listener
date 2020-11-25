@@ -36,4 +36,14 @@ client.on('error', async (error) => {
 
 client.login(token).catch((error) => logger.error(error));
 
+process.on('unhandledRejection', (reason, p) => {
+  logger.error(reason.stack);
+  logger.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error(`${(new Date()).toUTCString()} uncaughtException: `, err.message);
+  logger.error(err.stack);
+});
+
 module.exports = client;
