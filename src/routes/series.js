@@ -87,7 +87,7 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          await uploadUser.send(`\`✅\` | Thanks for uploading the series **${name}**!`);
+          await uploadUser.send(`\`✅\` | Thanks for uploading the series **${name}**!`).catch((error) => logger.error(error));
         } catch (error) {
           logger.error(error);
         }
@@ -107,11 +107,11 @@ route.post('/', async (req, res) => {
         try {
           logger.info(`Deleted: ${name}, ${imageURL}`);
 
-          await channelDenied.send(seriesFailedEmbed);
+          await channelDenied.send(seriesFailedEmbed).catch((error) => logger.error(error));
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          await uploadUser.send(`\`❌\` | Sorry, your submitted series **${name}** has been denied. You can still make a custom waifu and add it to its own series using the \`customwaifu\` command.`);
+          await uploadUser.send(`\`❌\` | Sorry, your submitted series **${name}** has been denied. You can still make a custom waifu and add it to its own series using the \`customwaifu\` command.`).catch((error) => logger.error(error));
         } catch (error) {
           logger.error(error);
         }
@@ -123,11 +123,11 @@ route.post('/', async (req, res) => {
         try {
           logger.info(`Deleted: ${name}, ${imageURL}`);
 
-          await channelDenied.send(seriesFailedEmbed);
+          await channelDenied.send(seriesFailedEmbed).catch((error) => logger.error(error));
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          uploadUser.send(`\`❌\` | Sorry, **${name}** needs a better description**. You can upload a better description and undergo a new review. Thank you!`);
+          uploadUser.send(`\`❌\` | Sorry, **${name}** needs a better description**. You can upload a better description and undergo a new review. Thank you!`).catch((error) => logger.error(error));
         } catch (error) {
           logger.error(error);
         }
@@ -139,11 +139,11 @@ route.post('/', async (req, res) => {
         try {
           logger.info(`Deleted: ${name}, ${imageURL}`);
 
-          await channelDenied.send(seriesFailedEmbed);
+          await channelDenied.send(seriesFailedEmbed).catch((error) => logger.error(error));
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          uploadUser.send(`\`❌\` | Sorry, **${name}** needs a better image**. You can upload a better image and undergo a new review. Thank you!`);
+          uploadUser.send(`\`❌\` | Sorry, **${name}** needs a better image**. You can upload a better image and undergo a new review. Thank you!`).catch((error) => logger.error(error));
         } catch (error) {
           logger.error(error);
         }
@@ -159,7 +159,7 @@ route.post('/', async (req, res) => {
           await reactMessage.delete();
 
           const uploadUser = await client.fetchUser(uploader);
-          uploadUser.send(`\`❌\` | Sorry, **${name}** needs several better properties.** You can try fixing the mistakes or join the main server to discuss. Thank you!`);
+          uploadUser.send(`\`❌\` | Sorry, **${name}** needs several better properties.** You can try fixing the mistakes or join the main server to discuss. Thank you!`).catch((error) => logger.error(error));
         } catch (error) {
           logger.error(error);
         }

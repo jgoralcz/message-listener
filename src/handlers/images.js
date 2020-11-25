@@ -70,14 +70,14 @@ const approved = async ({
       sfwEmbed.attachFile(data.urlCropped);
     }
 
-    await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: sfwEmbed });
+    await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: sfwEmbed }).catch((error) => logger.error(error));
     await reactMessage.delete();
 
     const buffer = await getBuffer(data.urlCropped);
     await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     const uploadUser = await client.fetchUser(uploader);
-    await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`);
+    await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`).catch((error) => logger.error(error));;
     return true;
   } catch (error) {
     logger.error(error);
@@ -119,11 +119,11 @@ const sfwNotCropped = async ({
       .setThumbnail(mainImage)
       .setTimestamp();
 
-    await channelAccept.send({ embed: sfwEmbed });
+    await channelAccept.send({ embed: sfwEmbed }).catch((error) => logger.error(error));
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${notAutocropped}`);
+    await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${notAutocropped}`).catch((error) => logger.error(error));
     return true;
   } catch (error) {
     logger.error(error);
@@ -165,11 +165,11 @@ const nsfwNotCropped = async ({
       .setThumbnail(mainImage)
       .setTimestamp();
 
-    await channelAccept.send({ embed: nsfwEmbed });
+    await channelAccept.send({ embed: nsfwEmbed }).catch((error) => logger.error(error));
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly} ${notAutocropped}`);
+    await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly} ${notAutocropped}`).catch((error) => logger.error(error));
     return true;
   } catch (error) {
     logger.error(error);
@@ -206,11 +206,11 @@ const denied = async ({
       .setThumbnail(mainImage)
       .setTimestamp();
 
-    await channelDenied.send(embedDenied);
+    await channelDenied.send(embedDenied).catch((error) => logger.error(error));
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    await uploadUser.send(`\`❌\` | ${imageURL} for **${name}** from **${series}** has been denied. Try to upload high quality and relevant images. Thank you!`);
+    await uploadUser.send(`\`❌\` | ${imageURL} for **${name}** from **${series}** has been denied. Try to upload high quality and relevant images. Thank you!`).catch((error) => logger.error(error));
     return true;
   } catch (error) {
     logger.error(error);
@@ -259,11 +259,11 @@ const nsfwImage = async ({
     const buffer = await getBuffer(data.urlCropped);
     await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
-    await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: nsfwEmbed });
+    await channelAccept.send(data.urlCropped || '**Could not crop image**', { embed: nsfwEmbed }).catch((error) => logger.error(error));
     await reactMessage.delete();
 
     const uploadUser = await client.fetchUser(uploader);
-    await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly}`);
+    await uploadUser.send(`\`✅\` | Your NSFW (Not Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfwChannelOnly}`).catch((error) => logger.error(error));
     return true;
   } catch (error) {
     logger.error(error);
@@ -316,7 +316,7 @@ const updateMainImage = async ({
     const discordCropURL = await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     const uploadUser = await client.fetchUser(uploader);
-    await uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfw ? '' : 'It will also be used as the main image! Thank you for your help'}`).catch(error => logger.error(error));
+    await uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfw ? '' : 'It will also be used as the main image! Thank you for your help'}`).catch((error) => logger.error(error));
 
     if (nsfw) {
       await reactMessage.edit('`❌` | Cannot set main image as a NSFW image!');
@@ -343,7 +343,7 @@ const updateMainImage = async ({
       return false;
     }
 
-    await channelAccept.send(`Successfully set ${data.urlCropped} as main image`, { embed });
+    await channelAccept.send(`Successfully set ${data.urlCropped} as main image`, { embed }).catch((error) => logger.error(error));
 
     await reactMessage.delete();
     return true;
