@@ -37,4 +37,24 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_environment.outputs.env }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_environment.outputs.env }}
+  
+  security_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract Environment
+        shell: bash
+        run: echo "##[set-output name=env;]$([ "${GITHUB_REF##*/}" == "master" ] && echo "prod" || echo "beta")"
+        id: extract_environment
+
+      - name: Extract Repo Name
+        shell: bash
+        run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
+        id: extract_repo
+    
+      - name: Scan with Phonito Security
+        uses: phonito/phonito-scanner-action@master
+        with:
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_environment.outputs.env }}
+          phonito-token: ${{ secrets.PHONITO_TOKEN }}
