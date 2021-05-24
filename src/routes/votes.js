@@ -13,9 +13,8 @@ route.post('/', async (req, res) => {
   if (!userID || !streak || !points) return res.status(400).send({ error: 'Invalid Input', message: 'Body missing userID, streak, and points' });
 
   const user = await client.fetchUser(userID);
-  const userName = user.tag;
 
-  await channel.send(`${userName}(${userID}) has received ${points} points, reset their rolls, and is on a ${streak} day voting streak.`, {
+  await channel.send(`${user.tag} has received ${points} points, stored +1 roll reset, and is on a ${streak} day voting streak.`, {
     split: true,
     code: 'js',
   });
