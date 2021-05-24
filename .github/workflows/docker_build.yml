@@ -42,15 +42,17 @@ jobs:
   security_scan:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: Set tag var
         id: vars
         run: echo ::set-output name=docker_tag::$(echo ${GITHUB_REF} | cut -d'/' -f3)-${GITHUB_SHA}
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag myapp:$@{{ steps.vars.outputs.docker_tag }}
-    
+        run: docker build . --file Dockerfile --tag myapp:${{ steps.vars.outputs.docker_tag }}
+
       - name: Scan with Phonito Security
         uses: phonito/phonito-scanner-action@master
         with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_environment.outputs.env }}
-          phonito-token: ${{ secrets.PHONITO_TOKEN }}
+          image: myapp:${{ steps.vars.outputs.docker_tag }}
+          phonito-token: '${{ secrets.PHONITO_TOKEN }}'
