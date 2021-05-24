@@ -42,16 +42,12 @@ jobs:
   security_scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Extract Environment
-        shell: bash
-        run: echo "##[set-output name=env;]$([ "${GITHUB_REF##*/}" == "master" ] && echo "prod" || echo "beta")"
-        id: extract_environment
+      - name: Set tag var
+        id: vars
+        run: echo ::set-output name=docker_tag::$(echo ${GITHUB_REF} | cut -d'/' -f3)-${GITHUB_SHA}
 
-      - name: Extract Repo Name
-        shell: bash
-        run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
-        id: extract_repo
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag myapp:$@{{ steps.vars.outputs.docker_tag }}
     
       - name: Scan with Phonito Security
         uses: phonito/phonito-scanner-action@master
