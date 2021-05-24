@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.10
+FROM node:current-alpine3.11
 
 LABEL owner = jgoralcz
 LABEL serviceVersion = 0.1.1
