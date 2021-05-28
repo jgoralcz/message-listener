@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:current-alpine3.11
 
 LABEL owner = jgoralcz
 LABEL serviceVersion = 0.1.1
