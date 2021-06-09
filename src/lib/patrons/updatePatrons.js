@@ -6,6 +6,7 @@ const { matchID } = require('../../util/constants/roles');
 const { getPatronIDByName } = require('./patronByID');
 const { config } = require('../../util/constants/paths');
 const { PROD } = require('../../util/constants/environments');
+const { PATRON_CHANNEL } = require('../../util/constants/channels');
 
 // eslint-disable-next-line import/no-dynamic-require
 const { owner } = require(config);
@@ -14,7 +15,7 @@ const thanks = (role) => `Thank you for becoming a ${role} Patron! <:yayyy:59444
 const setupMessage = 'I have set your server up! You can now use the `serversettings` command to customize your perks. If I made a mistake please be sure to send a message in the official Bongo Support server https://discord.gg/dfajqcZ.\n**Please do not leave the server otherwise you may lose your perks automatically!**';
 
 const awaitUserMessage = async (client, newMember, patronType) => {
-  const channel = await newMember.createDM();
+  const channel = client.channels.get(PATRON_CHANNEL);
   const filter = (message) => message.author.id === newMember.id;
   const collector = channel.createMessageCollector(filter);
 
@@ -36,7 +37,7 @@ const awaitUserMessage = async (client, newMember, patronType) => {
       await bongoBotAPI.patch(`/patrons/users/${newMember.id}/guilds/${guildID}`, { patronID, guildID, type: patronType });
 
       if (process.env.NODE_ENV === PROD) {
-        await newMember.send(setupMessage).catch((error) => logger.error(error));
+        await channel.send(setupMessage).catch((error) => logger.error(error));
       }
 
       collector.stop();
@@ -51,6 +52,7 @@ const awaitUserMessage = async (client, newMember, patronType) => {
 };
 
 const updateSuperBongo = async (client, member, patronType) => {
+  const channel = client.channels.get(PATRON_CHANNEL);
   try {
     const patronID = await getPatronIDByName(patronType);
     await bongoBotAPI.patch(`/patrons/users/${member.id}`, { patronID });
@@ -66,14 +68,16 @@ const updateSuperBongo = async (client, member, patronType) => {
 
   if (process.env.NODE_ENV !== PROD) return;
 
-  await member.send('Thank you for becoming a Super Bongo Patron! <:yayyy:594449175534632967> I have automatically set you up. If I made a mistake please send a message in the offical server.\n**Please do not leave the server otherwise you may lose your perks automatically!**').catch((error) => logger.error(error));
+  await channel.send('Thank you for becoming a Super Bongo Patron! <:yayyy:594449175534632967> I have automatically set you up. If I made a mistake please send a message in the offical server.\n**Please do not leave the server otherwise you may lose your perks automatically!**').catch((error) => logger.error(error));
 };
 
 const updateGuildPatron = async (client, member, patronType) => {
   logger.info(patronType, member.id, true);
+  const channel = client.channels.get(PATRON_CHANNEL);
+
   if (process.env.NODE_ENV !== PROD) return;
 
-  await member.send(thanks(patronType)).catch((error) => logger.error(error));
+  await channel.send(thanks(patronType)).catch((error) => logger.error(error));
 
   await awaitUserMessage(client, member, patronType);
 };

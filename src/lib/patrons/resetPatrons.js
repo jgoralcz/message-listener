@@ -10,7 +10,6 @@ const { PROD } = require('../../util/constants/environments');
 
 const { getPatronIDByName } = require('./patronByID');
 
-
 const thanksGoodbye = (role) => `Thanks for being a ${role} patron! Every bit of support helps keep me alive and allows me to create new things for everyone! Unfortunately, you no longer have your perks.\n\n This process is automatic. If you believe there is a mistake please ask in the official support server https://discord.gg/dfajqcZ.`;
 
 const resetSuperBongo = async (client, leftMember, patronType) => {
