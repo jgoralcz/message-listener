@@ -38,9 +38,7 @@ const run = (client) => {
     // special
     if (!oldMember.roles.get(bongoDaddy) && newMember.roles.get(bongoDaddy)) {
       if (process.env.NODE_ENV === PROD) {
-        oldMember.send('OwO I didn\'t expect anyone to be this nice! '
-          + 'Please come tell me which Bongo Cat you want and which servers '
-          + 'you want perks for (this is a manual process so it may take a bit).').catch((error) => logger.error(error));
+        oldMember.send('OwO I didn\'t expect anyone to be this nice! Thanks for being a Bongo Daddy patron!').catch((error) => logger.error(error));
       }
     }
 
