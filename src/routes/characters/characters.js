@@ -50,14 +50,13 @@ route.post('/', async (req, res) => {
       uploader,
       description,
       husbando,
-      unknownGender,
       nsfw,
     } = req.body;
 
     const reqBody = req.body;
     reqBody.crop = true;
 
-    if (!name || !series || !imageURL || !uploader || !description || husbando == null || unknownGender == null || nsfw == null) {
+    if (!name || !series || !imageURL || !uploader || !description || husbando === undefined || nsfw == null) {
       channelDenied.send(`Could not upload character: ${name}, ${series} from ${uploader}.`).catch((error) => logger.error(error));
       res.status(400).send({ error: `Invalid character: ${JSON.stringify(req.body)}` });
       return;
@@ -72,7 +71,7 @@ route.post('/', async (req, res) => {
     }
 
     // eslint-disable-next-line no-nested-ternary
-    const gender = unknownGender ? '?' : husbando ? 'male' : 'female';
+    const gender = husbando == null ? '?' : husbando ? 'male' : 'female';
 
     const embed = new RichEmbed()
       .setTitle(name)
