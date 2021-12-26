@@ -74,6 +74,7 @@ const run = (client) => {
       const { member } = event.d;
       if (!member || !member.roles || !member.roles.includes(reviewer)) return;
 
+      user.tag = `${user.username}#${user.discriminator}`;
       user.displayAvatarURL = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.gif`;
 
       if (channelID === imageChannels.pending) {
