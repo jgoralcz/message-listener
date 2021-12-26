@@ -1,7 +1,5 @@
 require('./server.js');
 const { Client, Intents, Permissions } = require('discord.js');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
 const logger = require('log4js').getLogger();
 const { basicAuth: loginToken, config } = require('./util/constants/paths');
 
