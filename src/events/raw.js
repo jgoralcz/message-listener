@@ -4,6 +4,7 @@ const logger = require('log4js').getLogger();
 const { bongoBotAPI } = require('../services/bongo');
 const { reviewer } = require('../util/constants/roles');
 const { config } = require('../util/constants/paths');
+const { PROD } = require('../util/constants/environments');
 
 const {
   imageChannels,
@@ -53,6 +54,8 @@ const imageHandlerForEmoji = async (customID, handlerData) => {
 const run = (client) => {
   client.on('raw', async (event) => {
     if (!event) return;
+
+    if (process.env.NODE_ENV !== PROD) return;
 
     if (!client || !client.user || !client.user.id) return;
 
