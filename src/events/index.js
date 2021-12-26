@@ -3,9 +3,9 @@ const guildMemberRemove = require('./guildMemberRemove');
 const raw = require('./raw');
 
 const run = async (bot) => {
-  await guildMemberUpdate(bot);
-  await guildMemberRemove(bot);
-  await raw(bot);
+  guildMemberUpdate(bot);
+  guildMemberRemove(bot);
+  raw(bot);
 };
 
 module.exports = run;

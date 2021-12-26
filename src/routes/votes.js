@@ -7,7 +7,7 @@ const { config } = require('../util/constants/paths');
 const { voteChannel } = require(config);
 
 route.post('/', async (req, res) => {
-  const channel = client.channels.get(voteChannel);
+  const channel = client.channels.cache.get(voteChannel);
   const {
     userID,
     streak,
@@ -17,7 +17,7 @@ route.post('/', async (req, res) => {
 
   if (!userID || !streak || !points) return res.status(400).send({ error: 'Invalid Input', message: 'Body missing userID, streak, and points' });
 
-  const user = await client.fetchUser(userID);
+  const user = await client.users.fetch(userID);
 
   await channel.send(`${user.tag} ${isPatron ? '(is a patron) ' : ''}has received ${points} points, stored +1 roll reset, and is on a ${streak} day voting streak.`, {
     split: true,

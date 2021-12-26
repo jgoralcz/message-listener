@@ -15,7 +15,7 @@ const thanks = (member, role) => `${member.toString()}, thank you for becoming a
 const setupMessage = (member) => `${member.toString()}, I have set your server up! You can now use the \`serversettings\` command to customize your perks. If I made a mistake please be sure to send a message in the official Bongo Support server https://discord.gg/dfajqcZ.\n**Please do not leave the server otherwise you may lose your perks automatically!**`;
 
 const awaitUserMessage = async (client, newMember, patronType) => {
-  const channel = client.channels.get(PATRON_CHANNEL);
+  const channel = client.channels.cache.get(PATRON_CHANNEL);
   const filter = (message) => message.author.id === newMember.id;
   const collector = channel.createMessageCollector(filter);
 
@@ -45,14 +45,14 @@ const awaitUserMessage = async (client, newMember, patronType) => {
       logger.error(error);
       logger.error(`Could not add ${newMember.id} - ${patronType}`);
 
-      const ownerUser = await client.fetchUser(owner);
+      const ownerUser = await client.users.fetch(owner);
       ownerUser.send(`Could not add ${newMember.id} - ${patronType}`).catch((err) => logger.error(err));
     }
   });
 };
 
 const updateSuperBongo = async (client, member, patronType) => {
-  const channel = client.channels.get(PATRON_CHANNEL);
+  const channel = client.channels.cache.get(PATRON_CHANNEL);
   try {
     const patronID = await getPatronIDByName(patronType);
     await bongoBotAPI.patch(`/patrons/users/${member.id}`, { patronID });
@@ -62,7 +62,7 @@ const updateSuperBongo = async (client, member, patronType) => {
     logger.error(error);
     logger.error(`Could not add ${member.id} - ${patronType}`);
 
-    const ownerUser = await client.fetchUser(owner);
+    const ownerUser = await client.users.fetch(owner);
     ownerUser.send(`Could not add ${member.id} - ${patronType}`).catch((err) => logger.error(err));
   }
 
@@ -73,7 +73,7 @@ const updateSuperBongo = async (client, member, patronType) => {
 
 const updateGuildPatron = async (client, member, patronType) => {
   logger.info(patronType, member.id, true);
-  const channel = client.channels.get(PATRON_CHANNEL);
+  const channel = client.channels.cache.get(PATRON_CHANNEL);
 
   if (process.env.NODE_ENV !== PROD) return;
 

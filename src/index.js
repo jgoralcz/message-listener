@@ -1,6 +1,8 @@
 require('./server.js');
-const { Client, Intents } = require('discord.js');
-const log4js = require('log4js');
+const { Client, Intents, Permissions } = require('discord.js');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const logger = require('log4js').getLogger();
 const { basicAuth: loginToken, config } = require('./util/constants/paths');
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -10,26 +12,52 @@ const { owner } = require(config);
 
 const events = require('./events/index');
 
-const logger = log4js.getLogger();
-
 const myIntents = new Intents();
-myIntents.add('GUILDS', 'GUILD_EMOJIS', 'GUILD_VOICE_STATES', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES');
+myIntents.add(
+  Intents.FLAGS.GUILDS,
+  Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+  Intents.FLAGS.GUILD_VOICE_STATES,
+  Intents.FLAGS.GUILD_MEMBERS,
+  Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+  Intents.FLAGS.DIRECT_MESSAGES,
+  Intents.FLAGS.GUILD_WEBHOOKS,
+);
 const client = new Client({
-  ws: {
-    intents: myIntents,
-  },
+  intents: myIntents,
+});
+
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isCommand()) return;
+
+  const { commandName } = interaction;
+
+  if (commandName === 'help') {
+    await interaction.reply('I don\'t have any commands :^)');
+  }
 });
 
 client.once('ready', async () => {
   logger.info(`Logged in as ${client.user.tag}.`);
-  logger.info(await client.generateInvite());
 
-  await client.user.setStatus('invisible');
+  client.application.commands.create({
+    name: 'help',
+    description: 'I don\t have any commands :^)',
+  });
+
+  const link = client.generateInvite({
+    permissions: [
+      Permissions.FLAGS.ADMINISTRATOR, // lazy
+    ],
+    scopes: ['bot'],
+  });
+  logger.info(link);
+
+  client.user.setStatus('invisible');
   await events(client);
 });
 
 client.on('error', async (error) => {
-  const ownerUser = await client.fetchUser(owner);
+  const ownerUser = await client.users.fetch(owner);
   logger.error(error);
   ownerUser.send(error).catch((err) => logger.error(err));
 });

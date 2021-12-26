@@ -1,25 +1,31 @@
-const { RichEmbed, Attachment } = require('discord.js');
+const {
+  MessageActionRow,
+  MessageButton,
+  MessageEmbed,
+  MessageAttachment,
+} = require('discord.js');
 const route = require('express-promise-router')();
 const logger = require('log4js').getLogger();
+
+const customIds = {
+  success: 'success',
+  deny: 'deny',
+  nsfw: 'nsfw',
+  nsfw_not_cropped: 'nsfw_not_cropped',
+  sfw_not_cropped: 'sfw_not_cropped',
+  main_image: 'main_image',
+};
 
 const { imageIdentifier } = require('../../util/constants/images');
 const client = require('../../index');
 const { bongoBotAPI } = require('../../services/bongo');
 const { config } = require('../../util/constants/paths');
-const {
-  APPROVE,
-  KEEP_SFW_IMAGE_NOT_CROPPED,
-  DENY,
-  NSFW,
-  KEEP_NSFW_IMAGE_NOT_CROPPED,
-  UPDATE_MAIN_IMAGE,
-} = require('../../util/constants/emojis');
 
 // eslint-disable-next-line import/no-dynamic-require
 const { imageChannels: { pending } } = require(config);
 
 route.post('/', async (req, res) => {
-  const channelPending = client.channels.get(pending);
+  const channelPending = client.channels.cache.get(pending);
 
   const {
     name,
@@ -45,33 +51,58 @@ route.post('/', async (req, res) => {
     buffer = data;
   }
 
-  const embed = new RichEmbed()
+  const embed = new MessageEmbed()
     .setTitle(name)
     .setImage(imageURL)
     .setURL(imageURL)
     .setThumbnail(mainImage)
-    .attachFile(new Attachment(Buffer.from(buffer), `cropped.${imageIdentifier(buffer) || 'gif'}`))
     .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
     .setTimestamp();
 
   if (!channelPending) return res.status(500).send(`no channel named channelPending ${channelPending}`);
-  const reactMessage = await channelPending.send('<:success:473906375064420362> = SFW AND GOOD CROP | <:spray:570827763792085005> = SFW, BUT BAD CROP | <:blacklist:473914756827316236> = NSFW AND GOOD CROP | <:VeggieSad:588560051204259846> = NSFW, BUT BAD CROP | <:failure:473906403019456522> = DELETE | <:2blove:481971390577377280> = SET AS MAIN IMAGE\n\n**CROPPED IMAGE**: ', { embed });
+
+  const row = new MessageActionRow()
+    .addComponents(
+      new MessageButton()
+        .setCustomId(customIds.success)
+        .setLabel('Approve')
+        .setStyle('SUCCESS'),
+      new MessageButton()
+        .setCustomId(customIds.deny)
+        .setLabel('Deny')
+        .setStyle('DANGER'),
+      new MessageButton()
+        .setCustomId(customIds.sfw_not_cropped)
+        .setLabel('SFW not cropped')
+        .setStyle('SECONDARY'),
+      new MessageButton()
+        .setCustomId(customIds.nsfw)
+        .setLabel('NSFW')
+        .setStyle('SECONDARY'),
+      new MessageButton()
+        .setCustomId(customIds.nsfw_not_cropped)
+        .setLabel('NSFW not cropped')
+        .setStyle('SECONDARY'),
+    );
+
+  const row2 = new MessageActionRow()
+    .addComponents(
+      new MessageButton()
+        .setCustomId(customIds.main_image)
+        .setLabel('Update Main Image')
+        .setStyle('SECONDARY'),
+    );
+
+  const interactionMessage = await channelPending.send({ embeds: [embed], files: [new MessageAttachment(Buffer.from(buffer), `cropped.${imageIdentifier(buffer) || 'gif'}`)], components: [row, row2] });
 
   await bongoBotAPI.post('/messages/images/pending', {
-    messageID: reactMessage.id,
+    messageID: interactionMessage.id,
     characterID: id,
     uploaderID: uploader,
     body,
     imageURL,
     nsfw,
   });
-
-  await reactMessage.react(APPROVE);
-  await reactMessage.react(KEEP_SFW_IMAGE_NOT_CROPPED);
-  await reactMessage.react(NSFW);
-  await reactMessage.react(KEEP_NSFW_IMAGE_NOT_CROPPED);
-  await reactMessage.react(DENY);
-  await reactMessage.react(UPDATE_MAIN_IMAGE);
 
   return res.sendStatus(200);
 });

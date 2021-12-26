@@ -20,38 +20,38 @@ const run = (client) => {
   // check for role updates.
   client.on('guildMemberUpdate', async (oldMember, newMember) => {
     // they have the same roles as before
-    if (oldMember.roles && newMember.roles && oldMember.roles.size === newMember.roles.size) return undefined;
+    if (oldMember.roles.cache && newMember.roles.cache && oldMember.roles.cache.size === newMember.roles.cache.size) return undefined;
 
     // new members
-    if (!oldMember.roles.get(superBongo) && newMember.roles.get(superBongo)) {
+    if (!oldMember.roles.cache.get(superBongo) && newMember.roles.cache.get(superBongo)) {
       updateSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }
 
-    if (!oldMember.roles.get(bongoNeko) && newMember.roles.get(bongoNeko)) {
+    if (!oldMember.roles.cache.get(bongoNeko) && newMember.roles.cache.get(bongoNeko)) {
       updateGuildPatron(client, newMember, 'Bongo Neko').catch((error) => logger.error(error));
     }
 
-    if (!oldMember.roles.get(smolNeko) && newMember.roles.get(smolNeko)) {
+    if (!oldMember.roles.cache.get(smolNeko) && newMember.roles.cache.get(smolNeko)) {
       updateGuildPatron(client, newMember, 'Smol Neko').catch((error) => logger.error(error));
     }
 
     // special
-    if (!oldMember.roles.get(bongoDaddy) && newMember.roles.get(bongoDaddy)) {
+    if (!oldMember.roles.cache.get(bongoDaddy) && newMember.roles.cache.get(bongoDaddy)) {
       if (process.env.NODE_ENV === PROD) {
         oldMember.send('OwO I didn\'t expect anyone to be this nice! Thanks for being a Bongo Daddy patron!').catch((error) => logger.error(error));
       }
     }
 
     // removed role
-    if (oldMember.roles.get(superBongo) && !newMember.roles.get(superBongo)) {
+    if (oldMember.roles.cache.get(superBongo) && !newMember.roles.cache.get(superBongo)) {
       resetSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }
 
-    if (oldMember.roles.get(bongoNeko) && !newMember.roles.get(bongoNeko)) {
+    if (oldMember.roles.cache.get(bongoNeko) && !newMember.roles.cache.get(bongoNeko)) {
       resetGuildLeaver(client, newMember, 'Bongo Neko').catch((error) => logger.error(error));
     }
 
-    if (oldMember.roles.get(smolNeko) && !newMember.roles.get(smolNeko)) {
+    if (oldMember.roles.cache.get(smolNeko) && !newMember.roles.cache.get(smolNeko)) {
       resetGuildLeaver(client, newMember, 'Smol Neko').catch((error) => logger.error(error));
     }
 
