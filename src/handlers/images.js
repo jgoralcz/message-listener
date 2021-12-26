@@ -58,6 +58,8 @@ const approved = async ({
 
     if (process.env.NODE_ENV !== PROD) return undefined;
 
+    await interactionMessage.delete().catch((error) => logger.error(error));
+
     const sfwEmbed = new MessageEmbed()
       .setTitle(name)
       .setImage(data.url)
@@ -68,7 +70,6 @@ const approved = async ({
       .setTimestamp();
 
     await channelAccept.send({ embeds: [sfwEmbed], content: data.urlCropped || '**Could not crop image**', files: [data.urlCropped] }).catch((error) => logger.error(error));
-    await interactionMessage.delete();
 
     const buffer = await getBuffer(data.urlCropped);
     await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
@@ -78,7 +79,7 @@ const approved = async ({
     return true;
   } catch (error) {
     logger.error(error);
-    await interactionMessage.edit('`❌` | An error occurred with this image...');
+    await interactionMessage.edit('`❌` | An error occurred with this image...').catch((e) => logger.error(e));
   }
   return false;
 };
@@ -124,7 +125,7 @@ const sfwNotCropped = async ({
     return true;
   } catch (error) {
     logger.error(error);
-    await interactionMessage.edit('`❌` | An error occurred with this image...');
+    await interactionMessage.edit('`❌` | An error occurred with this image...').catch((e) => logger.error(e));
   }
   return false;
 };
@@ -170,7 +171,7 @@ const nsfwNotCropped = async ({
     return true;
   } catch (error) {
     logger.error(error);
-    await interactionMessage.edit('`❌` | An error occurred with this image...');
+    await interactionMessage.edit('`❌` | An error occurred with this image...').catch((e) => logger.error(e));
   }
   return false;
 };
@@ -211,7 +212,7 @@ const denied = async ({
     return true;
   } catch (error) {
     logger.error(error);
-    await interactionMessage.edit('`❌` | An error occurred with this image...');
+    await interactionMessage.edit('`❌` | An error occurred with this image...').catch((e) => logger.error(e));
   }
   return false;
 };
@@ -260,7 +261,7 @@ const nsfwImage = async ({
     return true;
   } catch (error) {
     logger.error(error);
-    await interactionMessage.edit('`❌` | An error occurred with this image...');
+    await interactionMessage.edit('`❌` | An error occurred with this image...').catch((e) => logger.error(e));
   }
   return false;
 };
@@ -335,7 +336,7 @@ const updateMainImage = async ({
     return true;
   } catch (error) {
     logger.error(error);
-    await interactionMessage.edit('`❌` | An error occurred with this image...');
+    await interactionMessage.edit('`❌` | An error occurred with this image...').catch((e) => logger.error(e));
   }
   return false;
 };

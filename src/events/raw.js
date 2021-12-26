@@ -55,8 +55,6 @@ const run = (client) => {
   client.on('raw', async (event) => {
     if (!event) return;
 
-    if (process.env.NODE_ENV !== PROD) return;
-
     if (!client || !client.user || !client.user.id) return;
 
     if (event.t !== 'INTERACTION_CREATE' || !event.d || !event.d.channel_id || event.d.message.id === client.user.id) return;
