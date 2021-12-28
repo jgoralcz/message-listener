@@ -4,7 +4,6 @@ const logger = require('log4js').getLogger();
 const { bongoBotAPI } = require('../services/bongo');
 const { reviewer } = require('../util/constants/roles');
 const { config } = require('../util/constants/paths');
-const { PROD } = require('../util/constants/environments');
 
 const {
   imageChannels,
