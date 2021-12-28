@@ -16,7 +16,11 @@ const setupMessage = (member) => `${member.toString()}, I have set your server u
 
 const awaitUserMessage = async (client, newMember, patronType) => {
   const channel = client.channels.cache.get(PATRON_CHANNEL);
-  const collector = channel.createMessageCollector((message) => message.author.id === newMember.id);
+  const collector = channel.createMessageCollector((message) => {
+    console.log('message', message);
+    console.log(newMember.id);
+    return message.author.id === newMember.id;
+  });
 
   collector.on('collect', async (message) => {
     console.log('message', message);
