@@ -15,6 +15,7 @@ const thanks = (member, role) => `${member.toString()}, thank you for becoming a
 const setupMessage = (member) => `${member.toString()}, I have set your server up! You can now use the \`serversettings\` command to customize your perks. If I made a mistake please be sure to send a message in the official Bongo Support server https://discord.gg/dfajqcZ.\n**Please do not leave the server otherwise you may lose your perks automatically!**`;
 
 const awaitUserMessage = async (client, newMember, patronType) => {
+  console.log('await user message');
   const channel = client.channels.cache.get(PATRON_CHANNEL);
   const collector = channel.createMessageCollector((message) => {
     console.log('message', message);
@@ -83,6 +84,7 @@ const updateGuildPatron = async (client, member, patronType) => {
 
   await channel.send(thanks(member, patronType)).catch((error) => logger.error(error));
 
+  console.log('before function');
   await awaitUserMessage(client, member, patronType);
 };
 
