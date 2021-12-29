@@ -20,7 +20,6 @@ const awaitUserMessage = async (client, newMember, patronType) => {
   const collector = channel.createMessageCollector({ filter });
 
   collector.on('collect', async (message) => {
-    console.log('done with collecting');
     const { content } = message;
     if (!content) return;
 
@@ -31,11 +30,9 @@ const awaitUserMessage = async (client, newMember, patronType) => {
     const guildID = verify[0];
 
     try {
-      console.log('finished');
       const patronID = await getPatronIDByName(patronType);
 
       await bongoBotAPI.patch(`/patrons/users/${newMember.id}/guilds/${guildID}`, { patronID, guildID, type: patronType });
-      console.log('update patron');
       if (process.env.NODE_ENV === PROD) {
         await channel.send(setupMessage(newMember)).catch((error) => logger.error(error));
       }

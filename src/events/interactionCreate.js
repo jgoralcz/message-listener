@@ -64,7 +64,7 @@ const run = (client) => {
 
       const messageID = message.id;
       const { member, user, customId: customID } = interaction;
-      if (!member || !member.roles || !member.roles.cache || !member.roles.cache.includes(reviewer)) return;
+      if (!member || !member.roles || !member.roles.cache || !member.roles.cache.get(reviewer)) return;
       user.displayAvatarURL = user.displayAvatarURL();
 
       if (channelID === imageChannels.pending) {
