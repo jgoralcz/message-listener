@@ -65,7 +65,6 @@ const run = (client) => {
       const messageID = message.id;
       const { member, user, customId: customID } = interaction;
       if (!member || !member.roles || !member.roles.cache || !member.roles.cache.get(reviewer)) return;
-      user.displayAvatarURL = user.displayAvatarURL();
 
       if (channelID === imageChannels.pending) {
         const { status, data } = await bongoBotAPI.get(`/messages/${messageID}/images/pending`);
@@ -138,7 +137,7 @@ const run = (client) => {
         return;
       }
     } catch (error) {
-      logger.error(`raw event failed: ${error}`);
+      logger.error(`interactionCrate failed: ${error}`);
     }
   });
 };

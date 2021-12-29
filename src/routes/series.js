@@ -96,7 +96,7 @@ route.post('/', async (req, res) => {
             .setImage(data.url)
             .setURL(data.url)
             .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${(game) ? 'GAME - ' : ''}${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
-            .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+            .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
             .setTimestamp();
 
           await channelAccept.send({ embeds: [seriesEmbed] });
@@ -116,7 +116,7 @@ route.post('/', async (req, res) => {
         .setImage(imageURL)
         .setURL(imageURL)
         .setDescription(`${((western) ? 'WESTERN' : 'ANIME')} - ${(game) ? 'GAME - ' : ''}${((nsfw) ? 'NSFW' : 'SFW')}\n${body}\n\n${description}`)
-        .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+        .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
         .setTimestamp();
 
       if (i.customId === customIds.deny) {

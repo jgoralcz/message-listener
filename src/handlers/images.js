@@ -67,7 +67,7 @@ const approved = async ({
       .setImage(data.url)
       .setURL(data.url)
       .setDescription(`${series} - SFW\n${body}`)
-      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
       .setThumbnail(mainImage)
       .setTimestamp();
 
@@ -117,7 +117,7 @@ const sfwNotCropped = async ({
       .setImage(data.url)
       .setURL(data.url)
       .setDescription(`${series} - SFW\n${body}`)
-      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
       .setThumbnail(mainImage)
       .setTimestamp();
 
@@ -165,7 +165,7 @@ const nsfwNotCropped = async ({
       .setImage(data.url)
       .setURL(data.url)
       .setDescription(`${series} - NSFW\n${body}`)
-      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
       .setThumbnail(mainImage)
       .setTimestamp();
 
@@ -207,7 +207,7 @@ const denied = async ({
       .setImage(imageURL)
       .setURL(imageURL)
       .setDescription(`${series} - ${((nsfw) ? 'NSFW' : 'SFW')}\n${body}`)
-      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
       .setThumbnail(mainImage)
       .setTimestamp();
 
@@ -255,7 +255,7 @@ const nsfwImage = async ({
       .setImage(data.url)
       .setURL(data.url)
       .setDescription(`${series} - NSFW\n${body}`)
-      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
       .setThumbnail(mainImage)
       .setTimestamp();
 
@@ -309,7 +309,7 @@ const updateMainImage = async ({
       .setImage(data.url)
       .setURL(data.url)
       .setDescription(`${series} - ${isNSFWstr}\n${body}`)
-      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL)
+      .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
       .setThumbnail(mainImage)
       .setTimestamp();
 
