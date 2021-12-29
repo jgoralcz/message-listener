@@ -16,11 +16,8 @@ const setupMessage = (member) => `${member.toString()}, I have set your server u
 
 const awaitUserMessage = async (client, newMember, patronType) => {
   const channel = client.channels.cache.get(PATRON_CHANNEL);
-  const filter = (message) => {
-    console.log(message.author.id, newMember.id);
-    return message.author.id === newMember.id;
-  };
-  const collector = channel.createMessageCollector({ filter, time: 86400 * 1000 * 2 });
+  const filter = (message) => message.author.id === newMember.id;
+  const collector = channel.createMessageCollector({ filter });
 
   collector.on('collect', async (message) => {
     const { content } = message;
