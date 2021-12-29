@@ -51,31 +51,21 @@ const imageHandlerForEmoji = async (customID, handlerData) => {
 };
 
 const run = (client) => {
-  client.on('raw', async (event) => {
-    if (!event) return;
-
-    if (!client || !client.user || !client.user.id) return;
-
-    if (event.t !== 'INTERACTION_CREATE' || !event.d || !event.d.channel_id || event.d.message.id === client.user.id) return;
-
+  client.on('interactionCreate', async (interaction) => {
     try {
-      const channel = client.channels.cache.get(event.d.channel_id);
-      if (!channel || channel.type !== 'GUILD_TEXT') return;
+      const channel = client.channels.cache.get(interaction.channelId);
+      if (!channel || channel.type !== 'GUILD_TEXT' || !interaction.message || !interaction.message.id) return;
 
-      const message = channel.messages.cache.get(event.d.message.id) || await channel.messages.fetch(event.d.message.id);
+      const message = channel.messages.cache.get(interaction.message.id) || await channel.messages.fetch(interaction.message.id);
       if (!message || message.deleted || !message.guild || message.guild.id !== OFFICIAL_SERVER || !message.author || message.author.id !== client.user.id) return;
 
       const channelID = channel.id;
       if (![characterChannels.pending, imageChannels.pending, seriesChannels.pending].includes(channelID)) return;
 
       const messageID = message.id;
-      const { custom_id: customID } = event.d.data;
-      const { user } = event.d.member;
-      const { member } = event.d;
+      const { member, user, customId: customID } = interaction;
       if (!member || !member.roles || !member.roles.includes(reviewer)) return;
-
-      user.tag = `${user.username}#${user.discriminator}`;
-      user.displayAvatarURL = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.gif`;
+      user.displayAvatarURL = user.displayAvatarURL();
 
       if (channelID === imageChannels.pending) {
         const { status, data } = await bongoBotAPI.get(`/messages/${messageID}/images/pending`);
@@ -109,6 +99,7 @@ const run = (client) => {
         } = dataCharacter;
 
         const handlerData = {
+          interaction,
           client,
           channelAccept,
           channelDenied,

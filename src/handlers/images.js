@@ -29,6 +29,7 @@ const notAutocropped = 'However, it could not be autocropped. You can view the i
 const nsfwChannelOnly = 'You can view these images in a NSFW channel.';
 
 const approved = async ({
+  interaction,
   client,
   channelAccept,
   interactionMessage,
@@ -42,7 +43,7 @@ const approved = async ({
   uploader,
 }) => {
   try {
-    interactionMessage.deferReply().catch((error) => logger.error(error));
+    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
     const { status, data } = await bongoBotAPI.post(`/characters/${id}/images`, {
       uri: imageURL,
       nsfw: false,
@@ -86,6 +87,7 @@ const approved = async ({
 };
 
 const sfwNotCropped = async ({
+  interaction,
   client,
   channelAccept,
   interactionMessage,
@@ -99,7 +101,7 @@ const sfwNotCropped = async ({
   uploader,
 }) => {
   try {
-    interactionMessage.deferReply().catch((error) => logger.error(error));
+    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw: false,
@@ -133,6 +135,7 @@ const sfwNotCropped = async ({
 };
 
 const nsfwNotCropped = async ({
+  interaction,
   client,
   channelAccept,
   interactionMessage,
@@ -146,7 +149,7 @@ const nsfwNotCropped = async ({
   uploader,
 }) => {
   try {
-    interactionMessage.deferReply().catch((error) => logger.error(error));
+    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw: true,
@@ -180,6 +183,7 @@ const nsfwNotCropped = async ({
 };
 
 const denied = async ({
+  interaction,
   client,
   channelDenied,
   interactionMessage,
@@ -221,6 +225,7 @@ const denied = async ({
 };
 
 const nsfwImage = async ({
+  interaction,
   client,
   channelAccept,
   interactionMessage,
@@ -234,7 +239,7 @@ const nsfwImage = async ({
   uploader,
 }) => {
   try {
-    interactionMessage.deferReply().catch((error) => logger.error(error));
+    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw: true,
@@ -271,6 +276,7 @@ const nsfwImage = async ({
 };
 
 const updateMainImage = async ({
+  interaction,
   client,
   channelAccept,
   interactionMessage,
@@ -285,7 +291,7 @@ const updateMainImage = async ({
   nsfw,
 }) => {
   try {
-    interactionMessage.deferReply().catch((error) => logger.error(error));
+    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw,

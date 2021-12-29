@@ -128,7 +128,7 @@ route.post('/', async (req, res) => {
 
       if (i.customId === customIds.success) {
         try {
-          interactionMessage.deferReply().catch((error) => logger.error(error));
+          await i.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
           const { status: statusChar, data } = await bongoBotAPI.post('/characters', reqBody).catch((error) => logger.error(error));
 
           if (statusChar !== 201 && statusChar !== 200) {
