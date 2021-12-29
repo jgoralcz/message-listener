@@ -75,7 +75,7 @@ const updateGuildPatron = async (client, member, patronType) => {
   logger.info(patronType, member.id, true);
   const channel = client.channels.cache.get(PATRON_CHANNEL);
 
-  // if (process.env.NODE_ENV !== PROD) return;
+  if (process.env.NODE_ENV !== PROD) return;
 
   await channel.send(thanks(member, patronType)).catch((error) => logger.error(error));
 
