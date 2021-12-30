@@ -87,7 +87,7 @@ route.post('/', async (req, res) => {
       if (!member.roles.cache.get(reviewer)) return;
 
       if (i.customId === customIds.success) {
-        await i.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
+        await i.deferUpdate().catch((error) => logger.error(error));
         try {
           const { data } = await bongoBotAPI.post('/series', req.body);
 

@@ -43,7 +43,7 @@ const approved = async ({
   uploader,
 }) => {
   try {
-    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
+    await interaction.deferUpdate().catch((error) => logger.error(error));
     const { status, data } = await bongoBotAPI.post(`/characters/${id}/images`, {
       uri: imageURL,
       nsfw: false,
@@ -101,7 +101,7 @@ const sfwNotCropped = async ({
   uploader,
 }) => {
   try {
-    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
+    await interaction.deferUpdate().catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw: false,
@@ -149,7 +149,7 @@ const nsfwNotCropped = async ({
   uploader,
 }) => {
   try {
-    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
+    await interaction.deferUpdate().catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw: true,
@@ -239,7 +239,7 @@ const nsfwImage = async ({
   uploader,
 }) => {
   try {
-    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
+    await interaction.deferUpdate().catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw: true,
@@ -291,7 +291,7 @@ const updateMainImage = async ({
   nsfw,
 }) => {
   try {
-    interaction.deferReply({ ephemeral: true }).catch((error) => logger.error(error));
+    await interaction.deferUpdate().catch((error) => logger.error(error));
     const { data } = await bongoBotAPI.post(`/characters/${id}/images/`, {
       uri: imageURL,
       nsfw,
