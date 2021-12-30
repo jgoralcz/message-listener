@@ -6,6 +6,7 @@ const { getBuffer } = require('../util/constants/images');
 const { bongoBotAPI } = require('../services/bongo');
 const { OTHER_IMAGES } = require('../util/constants/channels');
 const { PROD } = require('../util/constants/environments');
+const { addBankPoints } = require('../services/user');
 
 const croppedDiscordImageOther = async (bot, id, buffer, imageURLClean) => {
   const channel = bot.channels.cache.get(OTHER_IMAGES);
@@ -76,6 +77,7 @@ const approved = async ({
     const buffer = await getBuffer(data.urlCropped);
     await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
+    await addBankPoints(uploader, 5000);
     const uploadUser = await client.users.fetch(uploader);
     await uploadUser.send(`\`✅\` | Your SFW (Safe For Work) image for **${name}** from **${series}** has been uploaded to: ${data.url}`).catch((error) => logger.error(error));
     return true;

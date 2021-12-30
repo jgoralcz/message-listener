@@ -7,6 +7,7 @@ const logger = log4js.getLogger();
 
 const client = require('../index');
 const { bongoBotAPI } = require('../services/bongo');
+const { addBankPoints } = require('../services/user');
 const { config } = require('../util/constants/paths');
 const { reviewer } = require('../util/constants/roles');
 
@@ -86,6 +87,8 @@ route.post('/', async (req, res) => {
       const { member, user } = i;
       if (!member.roles.cache.get(reviewer)) return;
 
+      await addBankPoints(user.id, 1000);
+
       if (i.customId === customIds.success) {
         await i.deferUpdate().catch((error) => logger.error(error));
         try {
@@ -99,6 +102,7 @@ route.post('/', async (req, res) => {
             .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
             .setTimestamp();
 
+          await addBankPoints(uploader, 10000);
           await channelAccept.send({ embeds: [seriesEmbed] });
           await interactionMessage.delete();
 

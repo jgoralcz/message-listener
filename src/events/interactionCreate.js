@@ -16,6 +16,7 @@ const {
 const OFFICIAL_SERVER = '335286472921841665';
 
 const imagesHandler = require('../handlers/images');
+const { addBankPoints } = require('../services/user');
 
 const customIds = {
   success: 'success',
@@ -27,6 +28,7 @@ const customIds = {
 };
 
 const imageHandlerForEmoji = async (customID, handlerData) => {
+  await addBankPoints(handlerData.user.id, 1000);
   if (customID === customIds.success) {
     return imagesHandler.approved(handlerData);
   }
