@@ -346,6 +346,7 @@ const updateMainImage = async ({
     await channelAccept.send({ embeds: [embed], content: data.urlCropped || '**Could not crop image**', files: [data.urlCropped] }).catch((error) => logger.error(error));
 
     await interactionMessage.delete();
+    await addBankPoints(uploader, 25000);
     return true;
   } catch (error) {
     logger.error(error);
