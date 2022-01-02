@@ -1,4 +1,5 @@
 const logger = require('log4js').getLogger();
+const { addBankPoints } = require('../services/user');
 
 const {
   superBongo,
@@ -24,6 +25,7 @@ const run = (client) => {
 
     // new members
     if (!oldMember.roles.cache.get(superBongo) && newMember.roles.cache.get(superBongo)) {
+      await addBankPoints(newMember.id, 1000000);
       updateSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }
 
