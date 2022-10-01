@@ -13,7 +13,7 @@ const addBankPoints = async (userID, points) => {
 };
 
 const addBankPointsPatronMonthly = async () => {
-  const { status, data } = await bongoBotAPI.patch('/patrons/points');
+  const { status, data } = await bongoBotAPI.patch('/patrons/monthly');
 
   if (status !== 200 || !data || data.points == null) {
     logger.error('=had a problem when adding patron points');
