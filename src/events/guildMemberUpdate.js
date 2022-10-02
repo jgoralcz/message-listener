@@ -33,6 +33,7 @@ const run = async (client) => {
     // new members
     if (!oldMember.roles.cache.get(superBongo) && newMember.roles.cache.get(superBongo)) {
       await addBankPoints(newMember.id, 1000000);
+
       updateSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }
 
@@ -53,18 +54,21 @@ const run = async (client) => {
 
     // removed role
     if (oldMember.roles.cache.get(superBongo) && !newMember.roles.cache.get(superBongo)) {
+      logger.info(`${newMember} wanted to remove`);
       creator.send(`member removed super bongo role: ${newMember}`).catch((error) => logger.error(error));
-      resetSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
+      // resetSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }
 
     if (oldMember.roles.cache.get(bongoNeko) && !newMember.roles.cache.get(bongoNeko)) {
+      logger.info(`${newMember} wanted to remove`);
       creator.send(`member removed bongo neko role: ${newMember}`).catch((error) => logger.error(error));
-      resetGuildLeaver(client, newMember, 'Bongo Neko').catch((error) => logger.error(error));
+      // resetGuildLeaver(client, newMember, 'Bongo Neko').catch((error) => logger.error(error));
     }
 
     if (oldMember.roles.cache.get(smolNeko) && !newMember.roles.cache.get(smolNeko)) {
+      logger.info(`${newMember} wanted to remove`);
       creator.send(`member removed smole neko role: ${newMember}`).catch((error) => logger.error(error));
-      resetGuildLeaver(client, newMember, 'Smol Neko').catch((error) => logger.error(error));
+      // resetGuildLeaver(client, newMember, 'Smol Neko').catch((error) => logger.error(error));
     }
 
     return undefined;
