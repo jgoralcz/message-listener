@@ -5,12 +5,10 @@ const {
   smolNeko,
 } = require('../util/constants/roles');
 
-const { config } = require('../util/constants/paths');
-
 const { resetGuildLeaver, resetSuperBongo } = require('../lib');
 
 const run = async (client) => {
-  const creator = await client.users.fetch(config.owner);
+  const creator = await client.users.fetch('304478893010583552').catch((error) => logger.error(error));
   client.on('guildMemberRemove', async (leftMember) => {
     if (leftMember.roles.cache.get(superBongo)) {
       creator.send(`member left with super bongo: ${leftMember}`).catch((error) => logger.error(error));

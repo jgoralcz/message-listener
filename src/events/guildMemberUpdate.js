@@ -17,10 +17,8 @@ const {
 
 const { PROD } = require('../util/constants/environments');
 
-const { config } = require('../util/constants/paths');
-
 const run = async (client) => {
-  const creator = await client.users.fetch(config.owner);
+  const creator = await client.users.fetch('304478893010583552').catch((error) => logger.error(error));
   // check for role updates.
   client.on('guildMemberUpdate', async (oldMember, newMember) => {
     // they have the same roles as before
