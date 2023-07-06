@@ -48,8 +48,11 @@ const awaitUserMessage = async (client, newMember, patronType) => {
   });
 };
 
-const updateSuperBongo = async (client, member, patronType) => {
+const updateSuperBongo = async (client, member, patronType, alreadySent = false) => {
+  if (process.env.NODE_ENV !== PROD) return;
+
   const channel = client.channels.cache.get(PATRON_CHANNEL);
+
   try {
     const patronID = await getPatronIDByName(patronType);
     await bongoBotAPI.patch(`/patrons/users/${member.id}`, { patronID });
@@ -63,7 +66,10 @@ const updateSuperBongo = async (client, member, patronType) => {
     ownerUser.send(`Could not add ${member.id} - ${patronType}`).catch((err) => logger.error(err));
   }
 
-  if (process.env.NODE_ENV !== PROD) return;
+  if (alreadySent) {
+    await channel.send(`${member.toString()}, thank you for becoming a Super Bongo Patron! Unfortunately, you've already received your points! If this is a mistake, please mention in the channel.`).catch((error) => logger.error(error));
+    return;
+  }
 
   await channel.send(`${member.toString()}, thank you for becoming a Super Bongo Patron! <:yayyy:594449175534632967> I have automatically set you up. If I made a mistake please send a message in the offical server.\n**Please do not leave the server otherwise you may lose your perks automatically!**`).catch((error) => logger.error(error));
 };

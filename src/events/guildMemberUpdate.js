@@ -30,7 +30,12 @@ const run = async (client) => {
 
     // new members
     if (!oldMember.roles.cache.get(superBongo) && newMember.roles.cache.get(superBongo)) {
+      const alreadySent = client.usersAdded.has(newMember.id);
+      if (alreadySent) {
+        updateSuperBongo(client, newMember, 'Super Bongo', alreadySent).catch((error) => logger.error(error));
+      }
       await addBankPoints(newMember.id, 1000000);
+      client.usersAdded.add(newMember.id);
 
       updateSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
     }

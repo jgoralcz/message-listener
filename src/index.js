@@ -1,4 +1,4 @@
-require('./server.js');
+require('./server');
 const { Client, Intents, Permissions } = require('discord.js');
 const logger = require('log4js').getLogger();
 const { basicAuth: loginToken, config } = require('./util/constants/paths');
@@ -24,6 +24,8 @@ myIntents.add(
 const client = new Client({
   intents: myIntents,
 });
+
+client.usersAdded = new Set();
 
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return;
