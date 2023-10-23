@@ -33,11 +33,12 @@ const run = async (client) => {
       const alreadySent = client.usersAdded.has(newMember.id);
       if (alreadySent) {
         updateSuperBongo(client, newMember, 'Super Bongo', alreadySent).catch((error) => logger.error(error));
-      }
-      await addBankPoints(newMember.id, 1000000);
-      client.usersAdded.add(newMember.id);
+      } else {
+        await addBankPoints(newMember.id, 1000000);
+        client.usersAdded.add(newMember.id);
 
-      updateSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
+        updateSuperBongo(client, newMember, 'Super Bongo').catch((error) => logger.error(error));
+      }
     }
 
     if (!oldMember.roles.cache.get(bongoNeko) && newMember.roles.cache.get(bongoNeko)) {

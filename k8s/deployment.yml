@@ -13,8 +13,6 @@ spec:
       labels:
         app: ${SERVICE_NAME}
     spec:
-      nodeSelector:
-        location: na
       containers:
         - name: ${SERVICE_NAME}
           image: ${IMAGE_LOCATION}
