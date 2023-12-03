@@ -299,8 +299,10 @@ const updateMainImage = async ({
       return false;
     }
 
+    const discordCropURL = data.urlCropped;
+
     if (!data.url || !data.urlCropped || !discordCropURL) {
-      await interactionMessage.edit({ content: '`❌` | Cannot set main image as a NSFW image!', components: [] }).catch((error) => logger.error(error));
+      await interactionMessage.edit({ content: '`❌` | Cannot find any image!', components: [] }).catch((error) => logger.error(error));
       return false;
     }
 
