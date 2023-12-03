@@ -240,9 +240,6 @@ const nsfwImage = async ({
       .setThumbnail(mainImage)
       .setTimestamp();
 
-    const buffer = await getBuffer(data.urlCropped);
-    await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
-
     await channelAccept.send({ embeds: [nsfwEmbed], content: data.urlCropped || '**Could not crop image**', files: [data.urlCropped] }).catch((error) => logger.error(error));
     await interactionMessage.delete();
 
@@ -293,9 +290,6 @@ const updateMainImage = async ({
       .setFooter(`${user.tag} (${user.id})`, user.displayAvatarURL())
       .setThumbnail(mainImage)
       .setTimestamp();
-
-    const buffer = await getBuffer(data.urlCropped);
-    const discordCropURL = await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     const uploadUser = await client.users.fetch(uploader);
     await uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfw ? '' : 'It will also be used as the main image! Thank you for your help'}`).catch((error) => logger.error(error));
