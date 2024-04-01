@@ -78,13 +78,12 @@ const run = (client) => {
             return;
           }
           const embed = message.embeds[0];
-          console.log('embed', embed);
 
           const name = embed.title;
 
           const splitSeries = embed.description.split('-');
           splitSeries.pop();
-          const series = splitSeries.join('-');
+          const series = splitSeries.join('-').trim();
 
           // TODO: parse name and series out from embed
           const { status, data: characterData } = await bongoBotAPI.get(`/characters/?name=${name}&series=${series}`);
