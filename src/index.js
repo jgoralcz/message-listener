@@ -26,6 +26,9 @@ const client = new Client({
 });
 
 client.usersAdded = new Set();
+setTimeout(() => {
+  client.usersAdded.clear();
+}, 1000 * 60 * 60 * 12);
 
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return;

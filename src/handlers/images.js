@@ -8,24 +8,6 @@ const { OTHER_IMAGES } = require('../util/constants/channels');
 const { PROD } = require('../util/constants/environments');
 const { addBankPoints } = require('../services/user');
 
-const croppedDiscordImageOther = async (bot, id, buffer, imageURLClean) => {
-  const channel = bot.channels.cache.get(OTHER_IMAGES);
-  if (!channel || !channel.send) {
-    logger.error(`COULD NOT FIND CHANNEL ${OTHER_IMAGES}`);
-    return undefined;
-  }
-
-  const myMessage = await channel.send({ files: [new MessageAttachment(Buffer.from(buffer), imageURLClean)] });
-  if (myMessage && myMessage.attachments && myMessage.attachments.first
-    && myMessage.attachments.first() && myMessage.attachments.first().proxyURL) {
-    const uri = myMessage.attachments.first().proxyURL;
-    await bongoBotAPI.patch(`/images/${id}/clean-discord`, { uri }).catch((error) => logger.error(error));
-    return uri;
-  }
-
-  return undefined;
-};
-
 const notAutocropped = 'However, it could not be autocropped. You can view the image by changing your crop settings in the `mysettings` command.';
 const nsfwChannelOnly = 'You can view these images in a NSFW channel.';
 
@@ -73,9 +55,6 @@ const approved = async ({
       .setTimestamp();
 
     await channelAccept.send({ embeds: [sfwEmbed], content: data.urlCropped || '**Could not crop image**', files: [data.urlCropped] }).catch((error) => logger.error(error));
-
-    const buffer = await getBuffer(data.urlCropped);
-    await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
     await addBankPoints(uploader, 5000);
     const uploadUser = await client.users.fetch(uploader);
@@ -261,9 +240,6 @@ const nsfwImage = async ({
       .setThumbnail(mainImage)
       .setTimestamp();
 
-    const buffer = await getBuffer(data.urlCropped);
-    await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
-
     await channelAccept.send({ embeds: [nsfwEmbed], content: data.urlCropped || '**Could not crop image**', files: [data.urlCropped] }).catch((error) => logger.error(error));
     await interactionMessage.delete();
 
@@ -315,9 +291,6 @@ const updateMainImage = async ({
       .setThumbnail(mainImage)
       .setTimestamp();
 
-    const buffer = await getBuffer(data.urlCropped);
-    const discordCropURL = await croppedDiscordImageOther(client, id, buffer, data.urlCropped).catch((error) => logger.error(error));
-
     const uploadUser = await client.users.fetch(uploader);
     await uploadUser.send(`\`✅\` | Your ${nsfw ? 'NSFW (Not Safe For Work)' : 'SFW (Safe For Work)'} image for **${name}** from **${series}** has been uploaded to: ${data.url}. ${nsfw ? '' : 'It will also be used as the main image! Thank you for your help'}`).catch((error) => logger.error(error));
 
@@ -326,8 +299,10 @@ const updateMainImage = async ({
       return false;
     }
 
+    const discordCropURL = data.urlCropped;
+
     if (!data.url || !data.urlCropped || !discordCropURL) {
-      await interactionMessage.edit({ content: '`❌` | Cannot set main image as a NSFW image!', components: [] }).catch((error) => logger.error(error));
+      await interactionMessage.edit({ content: '`❌` | Cannot find any image!', components: [] }).catch((error) => logger.error(error));
       return false;
     }
 

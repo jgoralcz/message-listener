@@ -30,20 +30,6 @@ const { characterChannels: { pending, accepted, denied } } = require(config);
 
 const logger = log4js.getLogger();
 
-const croppedDiscordImage = async (bot, id, buffer, imageURLClean) => {
-  const channel = bot.channels.cache.get(MAIN_IMAGE);
-  if (!channel || !channel.send) {
-    logger.error(`COULD NOT FIND CHANNEL ${MAIN_IMAGE}`);
-    return;
-  }
-  const myMessage = await channel.send({ files: [new MessageAttachment(Buffer.from(buffer), imageURLClean)] });
-  if (myMessage && myMessage.MessageAttachments && myMessage.MessageAttachments.first
-    && myMessage.MessageAttachments.first() && myMessage.MessageAttachments.first().proxyURL) {
-    const uri = myMessage.MessageAttachments.first().proxyURL;
-    await bongoBotAPI.patch(`/characters/${id}/images/clean-discord`, { uri });
-  }
-};
-
 route.post('/', async (req, res) => {
   try {
     const channelPending = client.channels.cache.get(pending);
@@ -151,7 +137,6 @@ route.post('/', async (req, res) => {
           await interactionMessage.delete();
 
           const uploadUser = await client.users.fetch(uploader);
-          await croppedDiscordImage(client, data.id, buffer, data.urlCropped).catch((error) => logger.error(error));
 
           await addBankPoints(uploader, 50000);
           await addBankPoints(user.id, 5000);
