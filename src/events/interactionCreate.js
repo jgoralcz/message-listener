@@ -69,10 +69,30 @@ const run = (client) => {
       if (!member || !member.roles || !member.roles.cache || !member.roles.cache.get(reviewer)) return;
 
       if (channelID === imageChannels.pending) {
-        const { status, data } = await bongoBotAPI.get(`/messages/${messageID}/images/pending`);
+        let { status, data } = await bongoBotAPI.get(`/messages/${messageID}/images/pending`);
 
         if (status !== 200 || !data) {
           logger.error(`error fetching message for image: ${messageID}... Possibly test vs prod bot?`);
+          if (!message.embeds || message.embeds.length <= 0) {
+            logger.error(`no embeds found for ${messageID}`);
+            return;
+          }
+          const embed = message.embeds[0];
+          console.log('embed', embed);
+
+          const name = embed.title;
+
+          const splitSeries = embed.description.split('-');
+          splitSeries.pop();
+          const series = splitSeries.join('-');
+
+          // TODO: parse name and series out from embed
+          const { status, data: characterData } = await bongoBotAPI.get(`/characters/?name=${name}&series=${series}`);
+          if (status !== 200) {
+            logger.error(`error fetching character: ${name} ${series}`);
+            return;
+          }
+          data = characterData;
           return;
         }
 
@@ -82,7 +102,7 @@ const run = (client) => {
         const {
           waifu_id: characterID,
           body,
-          uploader_id: uploaderID,
+          // uploader_id: uploaderID,
           image_url: imageURL,
           nsfw,
         } = data;
@@ -112,7 +132,7 @@ const run = (client) => {
           mainImage: imageURLClean,
           series,
           body,
-          uploader: uploaderID,
+          // uploader: uploaderID,
           nsfw,
         };
 
