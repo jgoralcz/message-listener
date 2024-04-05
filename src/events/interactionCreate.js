@@ -77,13 +77,13 @@ const run = (client) => {
       if (channelID === imageChannels.pending) {
         let { status, data } = await bongoBotAPI.get(`/messages/${messageID}/images/pending`);
 
+        const embed = message.embeds[0];
         if (status !== 200 || !data) {
           logger.error(`error fetching message for image: ${messageID}... Possibly test vs prod bot?`);
           if (!message.embeds || message.embeds.length <= 0) {
             logger.error(`no embeds found for ${messageID}`);
             return;
           }
-          const embed = message.embeds[0];
 
           const name = embed.title;
 
