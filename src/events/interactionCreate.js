@@ -27,6 +27,12 @@ const customIds = {
   main_image: 'main_image',
 };
 
+const extractNumber = (text) => {
+  const regex = /\((\d+)\)/;
+  const match = text.match(regex);
+  return match ? match[1] : null;
+};
+
 const imageHandlerForEmoji = async (customID, handlerData) => {
   await addBankPoints(handlerData.user.id, 1000);
   if (customID === customIds.success) {
@@ -98,6 +104,8 @@ const run = (client) => {
         const channelAccept = client.channels.cache.get(imageChannels.accepted);
         const channelDenied = client.channels.cache.get(imageChannels.denied);
 
+        const uploaderID = extractNumber(embed.description);
+
         const {
           waifu_id: characterID,
           body,
@@ -131,7 +139,7 @@ const run = (client) => {
           mainImage: imageURLClean,
           series,
           body,
-          // uploader: uploaderID,
+          uploader: uploaderID,
           nsfw,
         };
 
