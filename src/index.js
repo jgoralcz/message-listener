@@ -23,6 +23,7 @@ myIntents.add(
 );
 const client = new Client({
   intents: myIntents,
+  partials: ['REACTION', 'MESSAGE', 'USER'],
 });
 
 client.usersAdded = new Set();
