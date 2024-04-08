@@ -94,7 +94,7 @@ const run = (client) => {
           // TODO: parse name and series out from embed
           const { status, data: characterData } = await bongoBotAPI.get(`/characters/?name=${name}&series=${series}`);
           if (status !== 200) {
-            logger.error(`error fetching character: ${name} ${series}`);
+            logger.error(`error fetching character: ${name} ${series}`, status, characterData);
             return;
           }
           data = characterData;
