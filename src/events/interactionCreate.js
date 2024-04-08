@@ -92,7 +92,7 @@ const run = (client) => {
           const series = splitSeries.join('-').trim();
 
           // TODO: parse name and series out from embed
-          const { status, data: characterData } = await bongoBotAPI.get(`/characters/?name=${name}&series=${series}`);
+          const { status, data: characterData } = await bongoBotAPI.get(`/characters/name-series?name=${name}&series=${series}`);
           if (status !== 200) {
             logger.error(`error fetching character: ${name} ${series}`, status, characterData);
             return;
