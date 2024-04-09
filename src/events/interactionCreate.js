@@ -107,11 +107,12 @@ const run = (client) => {
 
         const {
           waifu_id: characterID,
-          body,
           // uploader_id: uploaderID,
-          image_url: imageURL,
-          nsfw,
         } = data;
+
+        const imageURL = data.image_url || embed?.image?.url;
+        const nsfw = data.nsfw != null || embed.description.includes('nsfw');
+        const body = data.body || embed?.description;
 
         const { status: statusCharacter, data: dataCharacter } = await bongoBotAPI.get(`/characters/${characterID}`);
         if (statusCharacter !== 200) {
