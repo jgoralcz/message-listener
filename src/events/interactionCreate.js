@@ -98,7 +98,6 @@ const run = (client) => {
             return;
           }
           data = characterData;
-          return;
         }
 
         const channelAccept = client.channels.cache.get(imageChannels.accepted);
