@@ -110,8 +110,8 @@ const run = (client) => {
           // uploader_id: uploaderID,
         } = data;
 
-        const imageURL = data.image_url || embed?.image?.url;
-        const nsfw = data.nsfw === true || embed.description.includes('nsfw');
+        const imageURL = embed?.image?.url || embed?.thumbnail?.proxyURL;
+        const nsfw = data.nsfw === true || embed?.description?.toLowerCase()?.includes('nsfw');
         const body = data.body || embed?.description;
 
         const { status: statusCharacter, data: dataCharacter } = await bongoBotAPI.get(`/characters/${characterID}`);
