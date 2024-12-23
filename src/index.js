@@ -20,10 +20,11 @@ myIntents.add(
   Intents.FLAGS.DIRECT_MESSAGES,
   Intents.FLAGS.GUILD_WEBHOOKS,
   Intents.FLAGS.GUILD_MESSAGES,
+  Intents.FLAGS.MESSAGE_CONTENT,
 );
 const client = new Client({
   intents: myIntents,
-  partials: ['REACTION', 'MESSAGE', 'USER'],
+  partials: ['REACTION', 'MESSAGE', 'USER', 'CHANNEL', 'GUILD_MEMBER'],
 });
 
 client.usersAdded = new Set();
