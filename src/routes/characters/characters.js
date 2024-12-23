@@ -107,7 +107,7 @@ route.post('/', async (req, res) => {
 
     const filter = (interaction) => [customIds.success, customIds.deny, customIds.image, customIds.description, customIds.else].includes(interaction.customId);
 
-    const collector = interactionMessage.createMessageComponentCollector(filter, { time: 8.64e+7 });
+    const collector = interactionMessage.createMessageComponentCollector(filter, { time: 8.64e+7 * 10 });
 
     const collectorFunction = async (i) => {
       const { member, user } = i;
